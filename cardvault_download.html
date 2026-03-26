@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CardVault</title>
+<style>
+:root{
+  --bg:#f0eeff;--panel:#fff;--border:#e2d8ff;
+  --text:#12112a;--text2:#4a4870;--text3:#9896bb;
+  --pink:#ff2d78;--cyan:#00ccf0;--yellow:#e6a800;
+  --purple:#7c3aed;--green:#00a844;--red:#ff1744;--orange:#ff6d00;
+  --pink-lt:#fff0f5;--cyan-lt:#e8fbff;
+  --shadow:0 2px 12px rgba(255,45,120,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:13px;display:flex;min-height:100vh;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:24px 24px}
+button{cursor:pointer;font-family:inherit}
+input,select{font-family:inherit}
+#sidebar{width:210px;background:#fff;border-right:2px solid var(--pink);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;box-shadow:4px 0 20px rgba(255,45,120,.10)}
+.brand{padding:18px 16px 14px;border-bottom:2px solid var(--pink-lt)}
+.brand-name{font-size:20px;font-weight:800;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.brand-sub{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:1px;text-transform:uppercase}
+nav{flex:1;padding:10px 0}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 18px;background:transparent;border:none;border-left:3px solid transparent;color:var(--text3);font-size:13px;text-align:left;transition:all .15s;font-weight:500}
+.nav-btn:hover{background:var(--pink-lt);color:var(--pink)}
+.nav-btn.active{background:var(--pink-lt);color:var(--pink);border-left-color:var(--pink);font-weight:700}
+.nav-btn svg{width:15px;height:15px;flex-shrink:0}
+.sidebar-footer{padding:14px 16px;border-top:1px solid var(--border)}
+.s-lbl{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.avatar-row{display:flex;flex-wrap:wrap;gap:4px}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:2px solid;flex-shrink:0}
+#main{margin-left:210px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+#topbar{background:#fff;border-bottom:2px solid var(--pink);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(255,45,120,.08);gap:12px}
+#topbar-title{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px;white-space:nowrap}
+#topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-wrap{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;display:flex;gap:8px;align-items:center}
+.search-wrap:focus-within{border-color:var(--cyan)}
+.search-wrap input{background:transparent;border:none;outline:none;color:var(--text);font-size:12px;width:150px}
+.date-chip{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--text3);font-weight:600;white-space:nowrap}
+.top-btn{border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;border:1.5px solid}
+.btn-pink{background:var(--pink);border-color:var(--pink);color:#fff;box-shadow:0 2px 10px rgba(255,45,120,.25)}
+.btn-pink:hover{background:#e0005a}
+.btn-outline{background:#fff;border-color:var(--cyan);color:var(--cyan)}
+.btn-outline:hover{background:var(--cyan-lt)}
+#content{padding:24px;flex:1}
+.view{display:none}.view.active{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;border-top:3px solid}
+.stat-label{font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat-val{font-size:20px;font-weight:800;word-break:break-all}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.panel-title{font-size:11px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
+.bar-row{margin-bottom:11px}
+.bar-meta{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px;font-weight:500}
+.bar-name{display:flex;align-items:center;gap:6px;color:var(--text2);overflow:hidden}
+.bar-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.bar-track{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
+.hold-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.hold-row:last-child{border-bottom:none}
+.tags-row{display:flex;flex-wrap:wrap;gap:10px}
+.tag-chip{border-radius:10px;padding:9px 16px;text-align:center;border:2px solid;min-width:70px}
+.tag-count{font-size:18px;font-weight:800}
+.tag-lbl{font-size:10px;margin-top:2px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.f-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text3);font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap}
+.f-btn:hover{border-color:var(--pink);color:var(--pink)}
+.table-wrap{background:#fff;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;table-layout:auto}
+thead tr{background:var(--bg);border-bottom:2px solid var(--border)}
+th{padding:10px 10px;text-align:left;color:var(--text3);font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;user-select:none;text-transform:uppercase;letter-spacing:.4px}
+th:hover{color:var(--pink)}
+th.no-sort{cursor:default}th.no-sort:hover{color:var(--text3)}
+tbody tr{border-bottom:1px solid #f5f3ff;transition:background .1s}
+tbody tr:hover{background:#fdf5ff}
+td{padding:8px 10px;vertical-align:top}
+.hint{font-size:11px;color:var(--text3);margin-top:8px;text-align:right}
+.player-cell{display:flex;align-items:center;gap:7px;min-width:90px}
+.p-av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;border:2px solid;flex-shrink:0}
+.p-name{font-weight:700;color:var(--text);font-size:12px;white-space:nowrap}
+.desc-cell{min-width:220px;max-width:300px}
+.desc-main{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;white-space:normal;word-break:break-word}
+.desc-meta{font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5;white-space:normal;word-break:break-word}
+.desc-collapsed .desc-main{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.desc-collapsed .desc-meta{display:none}
+.expand-btn{font-size:10px;color:var(--pink);cursor:pointer;margin-top:3px;display:inline-block;font-weight:700;border:none;background:none;padding:0;line-height:1.4}
+.badge{padding:2px 7px;border-radius:5px;font-size:10px;font-weight:800;border:1.5px solid;white-space:nowrap}
+.status-pill{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;white-space:nowrap;display:inline-block}
+.sale-cell{cursor:pointer;border-bottom:1.5px dashed var(--border);color:var(--text3);font-size:12px;white-space:nowrap}
+.sale-cell:hover{color:var(--pink)}
+.sale-iw{display:flex;gap:3px;align-items:center}
+.sale-inp{width:72px;background:var(--bg);border:1.5px solid var(--cyan);border-radius:6px;color:var(--text);padding:3px 6px;font-size:12px;font-weight:600;outline:none}
+.btn-sm{border:none;border-radius:4px;padding:3px 7px;font-size:11px;font-weight:700}
+.btn-ok{background:var(--green);color:#fff}
+.btn-no{background:#eee;color:var(--text3)}
+.lookup-btn{background:var(--bg);border:1.5px solid var(--cyan);border-radius:6px;color:var(--cyan);padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap}
+.lookup-btn:hover:not(:disabled){background:var(--cyan-lt)}
+.lookup-btn:disabled{opacity:.4;cursor:default}
+.mkt-info{font-size:10px;line-height:1.7;font-weight:600;min-width:120px}
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(18,17,42,.5);z-index:200;align-items:center;justify-content:center}
+#modal-overlay.open{display:flex}
+#modal{background:#fff;border-radius:16px;width:640px;max-width:95vw;max-height:92vh;overflow-y:auto;border:2px solid var(--pink);box-shadow:0 8px 40px rgba(255,45,120,.20)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:1}
+.modal-head h2{font-size:16px;font-weight:800;color:var(--text)}
+.modal-head h2 span{color:var(--pink)}
+.close-btn{background:none;border:none;font-size:20px;color:var(--text3);line-height:1;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.close-btn:hover{background:var(--pink-lt);color:var(--pink)}
+.modal-body{padding:20px 22px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.fg input,.fg select{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-size:13px;outline:none;transition:border .15s;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--pink)}
+.cw{display:flex;gap:6px}
+.cw input{flex:1}
+.cw select{width:78px;flex-shrink:0}
+.form-footer{display:flex;gap:10px;justify-content:flex-end;padding:14px 22px;border-top:1.5px solid var(--border)}
+.btn-save-form{background:var(--pink);border:none;border-radius:8px;color:#fff;padding:10px 22px;font-size:14px;font-weight:800;box-shadow:0 2px 8px rgba(255,45,120,.2)}
+.btn-save-form:hover{background:#e0005a}
+.btn-cancel-form{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text3);padding:10px 18px;font-size:13px;font-weight:700}
+.api-panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--cyan)}
+.api-panel input{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:8px 11px;font-size:12px;outline:none;width:300px;margin-right:8px}
+.api-panel input:focus{border-color:var(--cyan)}
+.btn-save-key{background:var(--cyan);border:none;border-radius:8px;color:#fff;padding:8px 14px;font-size:12px;font-weight:700}
+.arb-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.arb-row:last-child{border-bottom:none}
+.arb-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;border:2px solid}
+.vc-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text3);padding:5px 12px;font-size:12px;font-weight:600}
+.vc-btn:hover{border-color:var(--pink);color:var(--pink)}
+.fx-row{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px}
+.fx-item .fx-l{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;margin-bottom:3px}
+.fx-item .fx-v{font-size:18px;font-weight:800;color:var(--cyan)}
+.form-err{color:var(--red);font-size:12px;font-weight:600;margin-top:10px;display:none}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(3,1fr)}.charts-row{grid-template-columns:1fr}}
+@media(max-width:640px){#sidebar{display:none}#main{margin-left:0}.stat-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="brand"><div class="brand-name">CardVault</div><div class="brand-sub">Portfolio Tracker</div></div>
+  <nav>
+    <button class="nav-btn active" onclick="showView('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard
+    </button>
+    <button class="nav-btn" onclick="showView('portfolio',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Portfolio
+    </button>
+    <button class="nav-btn" onclick="showView('market',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg>Market Lookup
+    </button>
+    <button class="nav-btn" onclick="exportCSV()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="s-lbl">Players</div>
+    <div class="avatar-row" id="player-avatars"></div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="topbar">
+    <div id="topbar-title">Dashboard</div>
+    <div id="topbar-right">
+      <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9896bb" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="search-input" placeholder="Search cards..." oninput="renderPortfolio()">
+      </div>
+      <div class="date-chip" id="today-date"></div>
+      <label class="top-btn btn-outline" style="cursor:pointer">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Import CSV<input type="file" accept=".csv" style="display:none" onchange="importCSV(event)">
+      </label>
+      <button class="top-btn btn-pink" onclick="openModal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Card
+      </button>
+    </div>
+  </div>
+
+  <div id="content">
+    <div id="view-dashboard" class="view active">
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="charts-row">
+        <div class="panel"><div class="panel-title">Portfolio by Player</div><div id="player-bars"></div></div>
+        <div class="panel"><div class="panel-title">Top Holdings</div><div id="top-holdings"></div></div>
+      </div>
+      <div class="panel"><div class="panel-title">Card Type Breakdown</div><div class="tags-row" id="tag-breakdown"></div></div>
+    </div>
+
+    <div id="view-portfolio" class="view">
+      <div class="filter-row" id="player-filters"></div>
+      <div class="table-wrap"><div class="tbl-scroll">
+        <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
+      </div></div>
+      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Sale $ to enter price &nbsp;·&nbsp; Click Hold/Sold badge to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
+    </div>
+
+    <div id="view-market" class="view">
+      <div class="api-panel">
+        <div class="panel-title" style="margin-bottom:8px;color:var(--cyan)">Anthropic API Key — Required for Market Lookup</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:10px">Stored only in your browser. Sent directly to Anthropic only.</div>
+        <input id="api-key-input" type="password" placeholder="sk-ant-...">
+        <button class="btn-save-key" onclick="saveApiKey()">Save Key</button>
+        <div style="font-size:11px;margin-top:8px" id="key-status"></div>
+      </div>
+      <div class="panel" style="margin-bottom:16px;border-left:4px solid var(--pink)">
+        <div class="panel-title">Arbitrage Watchlist — US vs 卡淘</div>
+        <div id="arb-list"></div>
+      </div>
+      <div class="panel" style="border-left:4px solid var(--yellow)">
+        <div class="panel-title">Exchange Rates</div>
+        <div class="fx-row">
+          <div class="fx-item"><div class="fx-l">USD / CNY</div><div class="fx-v">~7.25</div></div>
+          <div class="fx-item"><div class="fx-l">CAD / USD</div><div class="fx-v">~0.72</div></div>
+          <div class="fx-item"><div class="fx-l">CNY / USD</div><div class="fx-v">~0.138</div></div>
+          <div class="fx-item"><div class="fx-l">Card Hobby Fee</div><div class="fx-v">~5%</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD CARD MODAL -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div id="modal">
+    <div class="modal-head">
+      <h2>Add <span>New Card</span></h2>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg"><label>Player Name *</label><input id="f-player" list="player-list" placeholder="e.g. Kon Knueppel"><datalist id="player-list"></datalist></div>
+        <div class="fg"><label>Purchase Date *</label><input id="f-date" type="date"></div>
+        <div class="fg full"><label>Set / Product *</label><input id="f-set" placeholder="e.g. 2025-26 Panini 爱咪咪"></div>
+        <div class="fg full"><label>Card Description *</label><input id="f-card" placeholder="e.g. Rookie Patch Auto #IPA-XX"></div>
+        <div class="fg"><label>Serial Number</label><input id="f-serial" placeholder="e.g. 32/99 or 5/5"></div>
+        <div class="fg"><label>Grade</label><input id="f-grade" list="grade-list" placeholder="Raw / PSA 10 / etc."><datalist id="grade-list"><option value="Raw"><option value="PSA 10"><option value="PSA 9"><option value="PSA 8"><option value="PSA 7"><option value="BGS 9.5"><option value="BGS 9"><option value="SGC 10"><option value="SGC 9.5"><option value="SGC 9"><option value="MNT 9"><option value="Raw (MINT)"></datalist></div>
+        <div class="fg"><label>Card Type *</label>
+          <select id="f-tag"><option value="rc">RC — Rookie Card</option><option value="auto">Auto — Autograph</option><option value="rpa">RPA — Rookie Patch Auto</option><option value="refractor">Refractor / Parallel</option><option value="insert">Insert / SP</option><option value="ssp">SSP — Super Short Print</option><option value="relic">Relic / Patch / GU</option></select>
+        </div>
+        <div class="fg"><label>Purchase Price *</label>
+          <div class="cw"><input id="f-cost" type="number" min="0" step="0.01" placeholder="0.00"><select id="f-currency"><option value="USD">USD</option><option value="CAD">CAD</option><option value="CNY">CNY</option></select></div>
+        </div>
+        <div class="fg"><label>Platform / Source</label><input id="f-source" list="source-list" placeholder="eBay / Card Hobby / Show"><datalist id="source-list"><option value="eBay"><option value="Card Hobby"><option value="Show"><option value="PWCC"><option value="Goldin"><option value="开盒"></datalist></div>
+        <div class="fg full"><label>Notes</label><input id="f-notes" placeholder="e.g. Storing in China warehouse / Sending to PSA"></div>
+      </div>
+      <div class="form-err" id="form-error"></div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-cancel-form" onclick="closeModal()">Cancel</button>
+      <button class="btn-save-form" onclick="saveCard()">Save Card</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAD_USD=0.72,CNY_USD=1/7.25;
+const PCOLORS=["#ff2d78","#00b3d4","#c68a00","#7c3aed","#00a844","#ff6d00","#e91e63","#0097a7","#558b2f","#651fff","#ff9100","#00838f"];
+const TAG_COLORS={auto:"#7c3aed",rpa:"#ff2d78",ssp:"#c68a00",rc:"#00a844",refractor:"#0097a7",insert:"#ff6d00",relic:"#e91e63"};
+const TAG_LABELS={auto:"AUTO",rpa:"RPA",ssp:"SSP",rc:"RC",refractor:"REFR",insert:"INSERT",relic:"RELIC"};
+
+const SEED=[
+  {id:51,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
+  {id:52,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:""},
+  {id:53,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:""},
+  {id:1,player:"Kon Knueppel",date:"2026-03-22",set:"2025-26 Topps Chrome",card:"Rookie Auto #NS-KK Green Refractor",serial:"32/99",grade:"Raw",cost:923.38,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:2,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps '80-81 Chrome",card:"#TCKK Rookie RC",serial:"",grade:"Raw",cost:41.37,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:3,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps Chrome '80-81",card:"#TC-KK Silver Rookie RC",serial:"",grade:"Raw",cost:43.83,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:4,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ultra Violet Case Hit SSP #UV-14",serial:"",grade:"Raw",cost:1216.95,tag:"ssp",source:"eBay",notes:"",salePrice:1000,status:"Sold"},
+  {id:5,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Yellow Refractor #254",serial:"/275",grade:"Raw",cost:138.85,tag:"refractor",source:"eBay",notes:"",salePrice:230,status:"Sold"},
+  {id:6,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Rookie Auto #TAUR2-KK Green",serial:"58/99",grade:"PSA 8 / Auto 10",cost:677.86,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:7,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ripper Relics Game Worn RC",serial:"",grade:"Raw",cost:59.27,tag:"relic",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:8,player:"Kon Knueppel",date:"2026-02-23",set:"2025-26 Topps Chrome",card:"Rookie Prism Refractor",serial:"",grade:"Raw",cost:57.65,tag:"refractor",source:"eBay",notes:"",salePrice:60,status:"Sold"},
+  {id:9,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Midnight",card:"Daydreamers #DD18 RC",serial:"",grade:"Raw",cost:103.28,tag:"insert",source:"eBay",notes:"",salePrice:100,status:"Sold"},
+  {id:10,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Chrome",card:"On Card Auto All-Time Rookie 3PT Leader",serial:"",grade:"Raw",cost:459.44,tag:"auto",source:"eBay",notes:"",salePrice:645.61,status:"Sold"},
+  {id:11,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Midnight",card:"Horizon Signatures RC Auto",serial:"",grade:"Raw",cost:384.37,tag:"auto",source:"eBay",notes:"",salePrice:560,status:"Sold"},
+  {id:12,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Chrome",card:"Radiating Rookies RC",serial:"",grade:"Raw",cost:411.06,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:13,player:"Kon Knueppel",date:"2026-02-13",set:"2025-26 Topps Chrome",card:"Radiating Rookies Case Hit SSP RR-4",serial:"",grade:"Raw",cost:539.40,tag:"ssp",source:"eBay",notes:"",salePrice:840,status:"Sold"},
+  {id:14,player:"Kon Knueppel",date:"2026-02-04",set:"2025-26 Topps Midnight",card:"Horizon Auto RC",serial:"",grade:"Raw",cost:426.99,tag:"auto",source:"eBay",notes:"",salePrice:637,status:"Sold"},
+  {id:15,player:"Kon Knueppel",date:"2026-01-25",set:"2025-26 Topps Chrome",card:"Fanatical Insert SSP #FAN-24 RC",serial:"",grade:"Raw",cost:68.28,tag:"ssp",source:"eBay",notes:"",salePrice:110,status:"Sold"},
+  {id:16,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Green Geometric Instinct #INS-14 RC",serial:"/99",grade:"Raw",cost:85.39,tag:"insert",source:"eBay",notes:"",salePrice:110,status:"Sold"},
+  {id:17,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps",card:"No Limit #NL-4 RC",serial:"/250",grade:"Raw",cost:34.76,tag:"insert",source:"eBay",notes:"",salePrice:55,status:"Sold"},
+  {id:18,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Ball Of Duty Raywave Refractor #23 RC",serial:"",grade:"Raw",cost:17.61,tag:"refractor",source:"eBay",notes:"",salePrice:30,status:"Sold"},
+  {id:19,player:"Kon Knueppel",date:"2026-01-23",set:"2025-26 Topps Chrome",card:"Stratospheric Rookie Auto RC SMR-KK",serial:"",grade:"Raw",cost:276.22,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:20,player:"Kon Knueppel",date:"2026-01-22",set:"2025-26 Topps",card:"New Applicant Auto #NA-KK RC",serial:"",grade:"Raw",cost:211.93,tag:"auto",source:"eBay",notes:"",salePrice:342.05,status:"Sold"},
+  {id:21,player:"Damian Lillard",date:"2026-03-21",set:"2012-13 Panini Brilliance",card:"Auto RC",serial:"",grade:"MNT 9 / Auto 10",cost:176.01,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:22,player:"Damian Lillard",date:"2026-03-17",set:"2024 Panini Prizm Black",card:"#91 Auto Blue Shimmer FOTL",serial:"15/25",grade:"PSA 10",cost:366.69,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:23,player:"Damian Lillard",date:"2026-03-17",set:"2023 Panini 爱咪咪",card:"Gold Heralded Auto",serial:"/10",grade:"PSA 7 / DNA 10",cost:219.50,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:24,player:"Damian Lillard",date:"2026-03-13",set:"2025-26 Topps Chrome",card:"#153 Teal Refractor",serial:"/199",grade:"Raw",cost:6.75,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:25,player:"Damian Lillard",date:"2026-03-09",set:"2022-23 Panini Prizm",card:"Dominance #16",serial:"",grade:"Raw",cost:1.60,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:26,player:"Damian Lillard",date:"2026-03-09",set:"2023-24 Panini Recon",card:"#143 Holo Blue",serial:"/99",grade:"Raw",cost:4.88,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:27,player:"Damian Lillard",date:"2026-03-05",set:"2019-20 Panini 爱咪咪",card:"Premium Gold Patch Auto",serial:"5/5",grade:"SGC 9.5 / Auto 10",cost:740.50,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:28,player:"Damian Lillard",date:"2026-03-05",set:"2018-19 Panini Select",card:"In Flight Signatures On Card",serial:"/35",grade:"PSA 10",cost:347.49,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:29,player:"Brandon Miller",date:"2026-03-07",set:"2023-24 Panini Prizm",card:"Pink Ice RC",serial:"",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:30,player:"Brandon Miller",date:"2026-03-06",set:"2023 Panini 马赛克",card:"City Edition #277 Reactive Blue RC",serial:"",grade:"PSA 10",cost:38.63,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:31,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Prizm",card:"Rookie Silver Prizm RC",serial:"",grade:"PSA 10",cost:247.65,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:32,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Court Kings",card:"Self Expression Ruby #5",serial:"/149",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:33,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Red Choice RC",serial:"/88",grade:"PSA 10",cost:406.72,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:34,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Court Kings",card:"#113 Base RC",serial:"",grade:"PSA 10",cost:33.08,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:35,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Orange Ice #152 RC",serial:"",grade:"PSA 10",cost:70.21,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:36,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Silver #152 RC",serial:"",grade:"PSA 10",cost:239.80,tag:"rc",source:"eBay",notes:"C$333.06 converted",salePrice:null,status:"In Collection"},
+  {id:37,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"Green RC #152",serial:"",grade:"PSA 10",cost:53.93,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:38,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"Green RC #152 (2nd)",serial:"",grade:"PSA 10",cost:65.65,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:39,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini 马赛克",card:"Jam Masters #1 Green Mosaic RC",serial:"",grade:"PSA 10",cost:16.54,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:40,player:"Anthony Edwards",date:"2026-03-08",set:"2024-25 Panini 手提",card:"Flawless Flyers On Card Auto",serial:"6/25",grade:"Raw",cost:1459.27,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:41,player:"Anthony Edwards",date:"2026-03-05",set:"2023-24 Panini 爱咪咪",card:"#IPA-ANT Patch Auto",serial:"/20",grade:"Raw",cost:1590.56,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:42,player:"LaMelo Ball",date:"2026-03-17",set:"2025-26 Topps Chrome",card:"Patented SSP Insert Case Hit #PD-11",serial:"",grade:"Raw",cost:52.31,tag:"ssp",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:43,player:"LaMelo Ball",date:"2026-03-03",set:"2025-26 Topps Chrome",card:"Glass Canvas Case Hit & Activators",serial:"/399",grade:"Raw",cost:111.02,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:44,player:"Stephen Curry",date:"2026-03-21",set:"2023-24 Panini National Archives Ink",card:"Auto",serial:"7/25",grade:"Raw",cost:1384.49,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:45,player:"Cade Cunningham",date:"2026-03-07",set:"2024-25 Panini One And One",card:"Day One Auto Green #DOS-CAD",serial:"5/5",grade:"Raw",cost:578.57,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:46,player:"Grant Williams",date:"2026-03-24",set:"2019-20 Panini 爱咪咪",card:"RPA Rookie Patch Auto",serial:"",grade:"Raw (MINT)",cost:58.70,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:47,player:"Shai Gilgeous-Alexander",date:"2026-03-15",set:"2025-26 Topps Finest",card:"Geometric Purple Refractor",serial:"36/100",grade:"Raw",cost:32.55,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:48,player:"Yongxi 'Jacky' Cui",date:"2026-03-07",set:"2024-25 Panini 爱咪咪",card:"Premium Patch Auto",serial:"/50",grade:"Raw",cost:59.27,tag:"rpa",source:"eBay",notes:"China market target",salePrice:null,status:"In Collection"},
+  {id:49,player:"Yang Hansen",date:"2026-02-17",set:"2025-26 Topps Midnight",card:"Midnight Sun Signatures RC Auto",serial:"",grade:"Raw",cost:42.70,tag:"auto",source:"eBay",notes:"China market target",salePrice:null,status:"In Collection"},
+  {id:50,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+];
+
+let cards=[],nextId=54,sortCol="date",sortDir="desc",playerFilter="All",editingId=null;
+const expanded=new Set();
+let apiKey=localStorage.getItem("cv_key")||"";
+
+const getPlayers=()=>[...new Set(cards.map(c=>c.player))];
+const pColor=p=>PCOLORS[getPlayers().indexOf(p)%PCOLORS.length];
+const initials=n=>n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+const fmt=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtS=n=>"$"+Math.round(n).toLocaleString("en-US");
+const pnlClr=n=>n==null?"var(--text3)":n>0?"var(--green)":n<0?"var(--red)":"var(--text3)";
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+function save(){try{localStorage.setItem("cv_cards",JSON.stringify(cards));localStorage.setItem("cv_nid",nextId);}catch(e){}}
+function load(){
+  try{const s=localStorage.getItem("cv_cards");if(s){cards=JSON.parse(s);nextId=+(localStorage.getItem("cv_nid")||54);return;}}catch(e){}
+  cards=SEED.map(c=>({salePrice:null,status:"In Collection",market:null,...c}));nextId=54;
+}
+function calcStats(){
+  const inCol=cards.filter(c=>c.status==="In Collection");
+  const sold=cards.filter(c=>c.status==="Sold"&&c.salePrice!=null);
+  const tc=cards.reduce((s,c)=>s+c.cost,0);
+  const rev=sold.reduce((s,c)=>s+c.salePrice,0);
+  const sc=sold.reduce((s,c)=>s+c.cost,0);
+  return{tc,inColCost:inCol.reduce((s,c)=>s+c.cost,0),rev,pnl:rev-sc,count:cards.length,inCol:inCol.length,soldCount:sold.length};
+}
+
+document.getElementById("today-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
+load();buildAvatars();
+if(apiKey)document.getElementById("key-status").innerHTML='<span style="color:var(--green);font-weight:700">✓ API key saved</span>';
+renderDashboard();
+
+function buildAvatars(){
+  const wrap=document.getElementById("player-avatars");wrap.innerHTML="";
+  getPlayers().slice(0,12).forEach(p=>{
+    const d=document.createElement("div");d.className="av";d.title=p;d.textContent=initials(p);
+    d.style.cssText=`background:${pColor(p)}22;border-color:${pColor(p)};color:${pColor(p)}`;
+    wrap.appendChild(d);
+  });
+  document.getElementById("player-list").innerHTML=getPlayers().map(p=>`<option value="${esc(p)}">`).join("");
+}
+
+function showView(id,btn){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("view-"+id).classList.add("active");
+  if(btn)btn.classList.add("active");
+  document.getElementById("topbar-title").textContent={dashboard:"Dashboard",portfolio:"Portfolio",market:"Market Lookup"}[id]||"";
+  if(id==="dashboard")renderDashboard();
+  else if(id==="portfolio")renderPortfolio();
+  else if(id==="market")renderMarket();
+}
+
+function renderDashboard(){
+  const s=calcStats();
+  document.getElementById("stat-grid").innerHTML=[
+    {l:"Total Cards",v:s.count,c:"var(--pink)",bt:"var(--pink)"},
+    {l:"Cost Basis",v:fmtS(s.tc),c:"var(--purple)",bt:"var(--purple)"},
+    {l:"In Collection",v:s.inCol+" cards",c:"var(--cyan)",bt:"var(--cyan)"},
+    {l:"Sold",v:s.soldCount+" cards",c:"var(--green)",bt:"var(--green)"},
+    {l:"Realized P&L",v:fmtS(s.pnl),c:s.pnl>=0?"var(--green)":"var(--red)",bt:s.pnl>=0?"var(--green)":"var(--red)"},
+  ].map(d=>`<div class="stat-card" style="border-top-color:${d.bt}"><div class="stat-label">${d.l}</div><div class="stat-val" style="color:${d.c}">${d.v}</div></div>`).join("");
+
+  const bp=getPlayers().map(p=>{const pc=cards.filter(c=>c.player===p);return{p,cost:pc.reduce((s,c)=>s+c.cost,0),col:pColor(p)};}).sort((a,b)=>b.cost-a.cost);
+  const mx=bp[0]?.cost||1;
+  document.getElementById("player-bars").innerHTML=bp.map(x=>`<div class="bar-row"><div class="bar-meta"><span class="bar-name"><span class="dot" style="background:${x.col}"></span><span>${esc(x.p)}</span></span><span style="font-weight:700;color:${x.col}">${fmtS(x.cost)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${(x.cost/mx*100).toFixed(1)}%;background:${x.col}"></div></div></div>`).join("");
+
+  document.getElementById("top-holdings").innerHTML=cards.filter(c=>c.status==="In Collection").sort((a,b)=>b.cost-a.cost).slice(0,8).map(c=>`<div class="hold-row"><div><div style="font-size:12px;font-weight:700;color:var(--text)">${esc(c.player)}</div><div style="font-size:11px;color:var(--text3);margin-top:1px">${esc(c.card.length>42?c.card.slice(0,42)+"…":c.card)}</div></div><div style="text-align:right;flex-shrink:0;margin-left:8px"><div style="font-size:12px;font-weight:800;color:var(--pink)">${fmt(c.cost)}</div>${c.serial?`<div style="font-size:10px;font-weight:700;color:var(--yellow)">${esc(c.serial)}</div>`:""}</div></div>`).join("");
+
+  document.getElementById("tag-breakdown").innerHTML=Object.entries(TAG_COLORS).map(([tag,col])=>{const n=cards.filter(c=>c.tag===tag).length;return n?`<div class="tag-chip" style="background:${col}18;border-color:${col}"><div class="tag-count" style="color:${col}">${n}</div><div class="tag-lbl" style="color:${col}">${tag}</div></div>`:"";}).join("");
+}
+
+function renderPortfolio(){
+  const search=document.getElementById("search-input").value.toLowerCase();
+  document.getElementById("player-filters").innerHTML=[{l:`All (${cards.length})`,v:"All",c:null},...getPlayers().map(p=>({l:p,v:p,c:pColor(p)}))].map(f=>{
+    const a=playerFilter===f.v;
+    return`<button class="f-btn" style="background:${a?(f.c||"var(--pink)"):"#fff"};color:${a?"#fff":(f.c||"var(--text3)")};border-color:${a?(f.c||"var(--pink)"):"var(--border)"}" onclick="setFilter('${esc(f.v)}')">${esc(f.l)}</button>`;
+  }).join("");
+
+  let data=[...cards].filter(c=>{
+    if(playerFilter!=="All"&&c.player!==playerFilter)return false;
+    if(search&&![c.player,c.card,c.set,c.grade,c.notes||"",c.source||""].join(" ").toLowerCase().includes(search))return false;
+    return true;
+  }).sort((a,b)=>{
+    let va=a[sortCol]??null,vb=b[sortCol]??null;
+    if(va===null&&vb===null)return 0;if(va===null)return 1;if(vb===null)return-1;
+    if(typeof va==="string")va=va.toLowerCase();if(typeof vb==="string")vb=vb.toLowerCase();
+    return sortDir==="asc"?(va>vb?1:-1):(va<vb?1:-1);
+  });
+
+  const cols=[["date","Date"],["player","Player"],["desc","Description","no-sort"],["grade","Grade"],["tag","Type"],["cost","Cost"],["salePrice","Sale $"],["pnl","P&L"],["status","Status"],["source","Source"],["mkt","Market","no-sort"]];
+  document.getElementById("tbl-head").innerHTML=`<tr>${cols.map(([c,l,cls])=>`<th class="${cls||""}"${!cls?` onclick="setSort('${c}')"`:""}>${esc(l)}${sortCol===c?(sortDir==="asc"?" ↑":" ↓"):""}</th>`).join("")}</tr>`;
+
+  document.getElementById("tbl-body").innerHTML=data.map(c=>{
+    const pnl=c.salePrice!=null?c.salePrice-c.cost:null;
+    const tc=TAG_COLORS[c.tag]||"#888";
+    const pc=pColor(c.player);
+    const isExp=expanded.has(c.id);
+    const descHtml=`<div class="desc-cell"><div class="${isExp?"":"desc-collapsed"}"><div class="desc-main">${esc(c.card)}</div><div class="desc-meta">${esc(c.set)}${c.serial?` &nbsp;·&nbsp; <strong style="color:var(--yellow)">${esc(c.serial)}</strong>`:""}${c.notes?` &nbsp;·&nbsp; <span style="color:var(--purple)">📝 ${esc(c.notes)}</span>`:""}</div></div><button class="expand-btn" onclick="toggleExp(${c.id})">${isExp?"▲ Collapse":"▼ Full details"}</button></div>`;
+
+    let mktHtml;
+    if(c.market&&!c.market.loading&&!c.market.error){
+      mktHtml=`<div class="mkt-info"><div style="color:var(--cyan)">🇺🇸 ${fmt(c.market.us_low)}–${fmt(c.market.us_high)}</div><div style="color:var(--yellow)">🇨🇳 ${fmt(c.market.china_low)}–${fmt(c.market.china_high)}</div><div style="color:${c.market.trend==="up"?"var(--green)":c.market.trend==="down"?"var(--red)":"var(--text3)"}">${c.market.trend==="up"?"↑ up":c.market.trend==="down"?"↓ down":"→ stable"}</div></div>`;
+    }else if(c.market&&c.market.loading){
+      mktHtml=`<span style="color:var(--cyan);font-size:11px">loading…</span>`;
+    }else if(c.market&&c.market.error){
+      mktHtml=`<span style="color:var(--red);font-size:11px">error</span>`;
+    }else{
+      mktHtml=`<button class="lookup-btn" onclick="lookupMarket(${c.id})"${!apiKey?" disabled title='Add API key in Market tab'":""}>Lookup</button>`;
+    }
+
+    const saleHtml=editingId===c.id
+      ?`<div class="sale-iw"><input class="sale-inp" id="si-${c.id}" type="number" step="0.01" value="${c.salePrice!=null?c.salePrice:""}" onkeydown="if(event.key==='Enter')saveSale(${c.id})"><button class="btn-sm btn-ok" onclick="saveSale(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelEdit()">✕</button></div>`
+      :`<span class="sale-cell" onclick="startEdit(${c.id})" style="color:${c.salePrice!=null?"var(--green)":"var(--text3)"};font-weight:${c.salePrice!=null?700:400}">${c.salePrice!=null?fmt(c.salePrice):"+ add"}</span>`;
+
+    return`<tr><td style="color:var(--text3);font-size:11px;white-space:nowrap">${c.date.slice(5)}</td><td><div class="player-cell"><div class="p-av" style="background:${pc}22;border-color:${pc};color:${pc}">${initials(c.player)}</div><span class="p-name">${esc(c.player.split(" ").at(-1))}</span></div></td><td>${descHtml}</td><td style="color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap">${esc(c.grade)}</td><td><span class="badge" style="background:${tc}18;color:${tc};border-color:${tc}">${TAG_LABELS[c.tag]||c.tag}</span></td><td style="color:var(--pink);font-weight:800;white-space:nowrap">${fmt(c.cost)}</td><td>${saleHtml}</td><td style="color:${pnlClr(pnl)};font-weight:800;white-space:nowrap">${pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—"}</td><td><span class="status-pill" onclick="toggleStatus(${c.id})" style="background:${c.status==="Sold"?"#e6fff0":"#e8f4ff"};color:${c.status==="Sold"?"var(--green)":"var(--cyan)"};border-color:${c.status==="Sold"?"var(--green)":"var(--cyan)"}">${c.status==="Sold"?"Sold":"Hold"}</span></td><td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(c.source||"eBay")}</td><td>${mktHtml}</td></tr>`;
+  }).join("");
+
+  if(editingId!=null){requestAnimationFrame(()=>{const el=document.getElementById(`si-${editingId}`);if(el){el.focus();el.select();}});}
+}
+
+function toggleExp(id){expanded.has(id)?expanded.delete(id):expanded.add(id);renderPortfolio();}
+function setFilter(v){playerFilter=v;renderPortfolio();}
+function setSort(col){sortDir=sortCol===col&&sortDir==="asc"?"desc":"asc";sortCol=col;renderPortfolio();}
+function startEdit(id){editingId=id;renderPortfolio();}
+function cancelEdit(){editingId=null;renderPortfolio();}
+function saveSale(id){
+  const el=document.getElementById(`si-${id}`);if(!el)return;
+  const v=parseFloat(el.value);
+  cards=cards.map(c=>c.id===id?{...c,salePrice:isNaN(v)?null:v,status:isNaN(v)?c.status:"Sold"}:c);
+  editingId=null;save();renderPortfolio();
+}
+function toggleStatus(id){cards=cards.map(c=>c.id===id?{...c,status:c.status==="Sold"?"In Collection":"Sold"}:c);save();renderPortfolio();}
+
+function openModal(){document.getElementById("modal-overlay").classList.add("open");buildAvatars();setTimeout(()=>document.getElementById("f-player").focus(),100);}
+function closeModal(){document.getElementById("modal-overlay").classList.remove("open");document.getElementById("form-error").style.display="none";}
+function saveCard(){
+  const player=document.getElementById("f-player").value.trim();
+  const date=document.getElementById("f-date").value;
+  const set=document.getElementById("f-set").value.trim();
+  const card=document.getElementById("f-card").value.trim();
+  const costRaw=parseFloat(document.getElementById("f-cost").value);
+  const currency=document.getElementById("f-currency").value;
+  const err=document.getElementById("form-error");
+  if(!player||!date||!set||!card||isNaN(costRaw)){err.textContent="Please fill in all required fields (*)";err.style.display="block";return;}
+  err.style.display="none";
+  let cost=costRaw;
+  if(currency==="CAD")cost=+(costRaw*CAD_USD).toFixed(2);
+  if(currency==="CNY")cost=+(costRaw*CNY_USD).toFixed(2);
+  const note=document.getElementById("f-notes").value.trim()+(currency!=="USD"?` [orig ${currency} ${costRaw}]`:"");
+  cards=[{id:nextId++,player,date,set,card,serial:document.getElementById("f-serial").value.trim(),grade:document.getElementById("f-grade").value.trim()||"Raw",tag:document.getElementById("f-tag").value,cost,source:document.getElementById("f-source").value.trim()||"eBay",notes:note,salePrice:null,status:"In Collection",market:null},...cards];
+  save();buildAvatars();closeModal();
+  ["f-player","f-set","f-card","f-serial","f-grade","f-cost","f-source","f-notes"].forEach(id=>{document.getElementById(id).value="";});
+  document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
+  document.getElementById("f-currency").value="USD";
+  document.getElementById("f-tag").value="rc";
+  showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
+}
+
+function importCSV(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const lines=e.target.result.replace(/\r/g,"").split("\n").filter(l=>l.trim());
+      const parseRow=line=>{const r=[];let cur="",inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){r.push(cur.trim());cur="";}else cur+=ch;}r.push(cur.trim());return r.map(c=>c.replace(/^"|"$/g,"").trim());};
+      const hdr=parseRow(lines[0]).map(h=>h.toLowerCase().replace(/[^a-z0-9]/g,""));
+      const idx=k=>hdr.findIndex(h=>h===k);
+      const iId=idx("id"),iPlayer=idx("player"),iDate=idx("date"),iSet=idx("set"),iCard=idx("card");
+      const iSerial=idx("serial"),iGrade=idx("grade"),iType=idx("type"),iCost=idx("costusd");
+      const iSale=idx("saleprice"),iStatus=idx("status"),iSource=idx("source"),iNotes=idx("notes");
+      let added=0,updated=0;
+      for(let i=1;i<lines.length;i++){
+        const cols=parseRow(lines[i]);if(cols.length<5)continue;
+        const g=k=>k>=0&&k<cols.length?cols[k]:"";
+        const player=g(iPlayer),card=g(iCard);if(!player||!card)continue;
+        const id=parseInt(g(iId));
+        const cost=parseFloat(g(iCost))||0;
+        const saleRaw=parseFloat(g(iSale));
+        const salePrice=isNaN(saleRaw)?null:saleRaw;
+        const status=g(iStatus)||"In Collection";
+        const existing=!isNaN(id)&&cards.find(c=>c.id===id);
+        if(existing){cards=cards.map(c=>c.id===id?{...c,player,date:g(iDate)||c.date,set:g(iSet)||c.set,card,serial:g(iSerial),grade:g(iGrade)||c.grade,tag:g(iType)||c.tag,cost,salePrice,status,source:g(iSource)||c.source,notes:g(iNotes)||c.notes}:c);updated++;}
+        else{const newId=!isNaN(id)?id:nextId++;if(!isNaN(id)&&id>=nextId)nextId=id+1;cards.push({id:newId,player,date:g(iDate),set:g(iSet),card,serial:g(iSerial),grade:g(iGrade)||"Raw",tag:g(iType)||"rc",cost,salePrice,status,source:g(iSource)||"eBay",notes:g(iNotes)||"",market:null});added++;}
+      }
+      save();buildAvatars();
+      alert(`CSV imported!\n${added} new card${added!==1?"s":""} added\n${updated} card${updated!==1?"s":""} updated`);
+      showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
+    }catch(err){alert("CSV import failed. Check file format.\n"+err.message);}
+    event.target.value="";
+  };
+  reader.readAsText(file,"UTF-8");
+}
+
+function renderMarket(){
+  if(apiKey)document.getElementById("key-status").innerHTML='<span style="color:var(--green);font-weight:700">✓ API key saved</span>';
+  document.getElementById("api-key-input").value=apiKey;
+  const watch=[{p:"Cooper Flagg",n:"Projected #1 pick — US surging, check China lag"},{p:"Yongxi 'Jacky' Cui",n:"Chinese player — expect 卡淘 premium"},{p:"Yang Hansen",n:"Chinese player — strong domestic demand"},{p:"Anthony Edwards",n:"Top NBA star — popular across both markets"},{p:"LaMelo Ball",n:"Charlotte Hornets — solid Chinese market interest"},{p:"Brandon Miller",n:"Rising Hornet — compare regional gaps"}];
+  document.getElementById("arb-list").innerHTML=watch.map(w=>`<div class="arb-row"><div style="display:flex;align-items:center;gap:10px"><div class="arb-av" style="background:${pColor(w.p)}18;border-color:${pColor(w.p)};color:${pColor(w.p)}">${initials(w.p)}</div><div><div style="font-weight:700;color:var(--text);font-size:13px">${esc(w.p)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(w.n)}</div></div></div><button class="vc-btn" onclick="viewPlayer('${esc(w.p)}')">View cards →</button></div>`).join("");
+}
+function viewPlayer(p){playerFilter=p;showView("portfolio",document.querySelectorAll(".nav-btn")[1]);}
+function saveApiKey(){apiKey=document.getElementById("api-key-input").value.trim();localStorage.setItem("cv_key",apiKey);document.getElementById("key-status").innerHTML=apiKey?'<span style="color:var(--green);font-weight:700">✓ Key saved</span>':'<span style="color:var(--yellow)">No key entered</span>';}
+
+async function lookupMarket(id){
+  if(!apiKey){alert("Add your Anthropic API key in Market Lookup tab first.");return;}
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  cards=cards.map(x=>x.id===id?{...x,market:{loading:true}}:x);renderPortfolio();
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:`Sports card market analyst. Estimate current market prices:\nPlayer: ${c.player}\nSet: ${c.set}\nCard: ${c.card}\nSerial: ${c.serial||"unnumbered"}\nGrade: ${c.grade}\nPaid: $${c.cost}\nReply ONLY with valid JSON, no markdown:\n{"us_low":number,"us_high":number,"china_low":number,"china_high":number,"trend":"up"|"down"|"stable","note":"one sentence"}`}]})});
+    const d=await res.json();
+    const parsed=JSON.parse((d.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
+    cards=cards.map(x=>x.id===id?{...x,market:parsed}:x);
+  }catch(err){cards=cards.map(x=>x.id===id?{...x,market:{error:true}}:x);}
+  save();renderPortfolio();
+}
+
+function exportCSV(){
+  const h=["ID","Player","Date","Set","Card","Serial","Grade","Type","Cost(USD)","Sale Price","P&L","Status","Source","Notes"];
+  const rows=cards.map(c=>{const p=c.salePrice!=null?(c.salePrice-c.cost).toFixed(2):"";const qt=s=>`"${String(s||"").replace(/"/g,'""')}"`;return[c.id,qt(c.player),c.date,qt(c.set),qt(c.card),c.serial||"",c.grade,c.tag,c.cost.toFixed(2),c.salePrice!=null?c.salePrice.toFixed(2):"",p,c.status,c.source||"",qt(c.notes||"")].join(",");});
+  const a=document.createElement("a");
+  a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent([h.join(","),...rows].join("\n"));
+  a.download="cardvault_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+}
+</script>
+</body>
+</html>
