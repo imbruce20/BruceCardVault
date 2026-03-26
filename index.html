@@ -142,6 +142,51 @@ td{padding:8px 10px;vertical-align:top}
 </head>
 <body>
 
+<!-- PIN LOCK SCREEN -->
+<div id="pin-screen">
+  <div class="pin-box">
+    <div class="pin-logo">CardVault</div>
+    <div class="pin-sub">Enter PIN to access</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-grid">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key zero" onclick="pinPress('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+    <div class="pin-hint">Default PIN: 8888</div>
+  </div>
+</div>
+
+<!-- CHANGE PIN MODAL -->
+<div id="pin-modal">
+  <div class="pin-modal-box">
+    <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">Change PIN</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:20px">Enter a new 4-digit PIN</div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
+      <input id="pin-new" type="password" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="New PIN" style="width:120px;text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px;outline:none">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button onclick="closePinModal()" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--text3)">Cancel</button>
+      <button onclick="saveNewPin()" style="background:var(--cyan);border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;color:#fff">Save PIN</button>
+    </div>
+    <div id="pin-modal-err" style="color:var(--red);font-size:11px;font-weight:700;margin-top:10px;min-height:16px"></div>
+  </div>
+</div>
+
 <div id="sidebar">
   <div class="brand"><div class="brand-name">CardVault</div><div class="brand-sub">Portfolio Tracker</div></div>
   <nav>
@@ -151,11 +196,14 @@ td{padding:8px 10px;vertical-align:top}
     <button class="nav-btn" onclick="showView('portfolio',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Portfolio
     </button>
-    <button class="nav-btn" onclick="showView('market',this)">
+          <button class="nav-btn" onclick="showView('market',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg>Market Lookup
     </button>
     <button class="nav-btn" onclick="exportCSV()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export CSV
+    </button>
+    <button class="nav-btn" onclick="openPinModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Change PIN
     </button>
   </nav>
   <div class="sidebar-footer">
@@ -265,6 +313,54 @@ const CAD_USD=0.72,CNY_USD=1/7.25;
 const PCOLORS=["#ff2d78","#00b3d4","#c68a00","#7c3aed","#00a844","#ff6d00","#e91e63","#0097a7","#558b2f","#651fff","#ff9100","#00838f"];
 const TAG_COLORS={auto:"#7c3aed",rpa:"#ff2d78",ssp:"#c68a00",rc:"#00a844",refractor:"#0097a7",insert:"#ff6d00",relic:"#e91e63"};
 const TAG_LABELS={auto:"AUTO",rpa:"RPA",ssp:"SSP",rc:"RC",refractor:"REFR",insert:"INSERT",relic:"RELIC"};
+const DEFAULT_PIN="8888";
+
+// PIN LOGIC
+let pinEntry="";
+function getPin(){return localStorage.getItem("cv_pin")||DEFAULT_PIN;}
+function pinPress(d){
+  if(pinEntry.length>=4)return;
+  pinEntry+=d;
+  updateDots();
+  if(pinEntry.length===4)setTimeout(checkPin,120);
+}
+function pinDel(){if(pinEntry.length>0){pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById("pin-err").textContent="";}}
+function updateDots(){
+  for(let i=0;i<4;i++){
+    const dot=document.getElementById("d"+i);
+    dot.classList.toggle("filled",i<pinEntry.length);
+  }
+}
+function checkPin(){
+  if(pinEntry===getPin()){
+    document.getElementById("pin-screen").style.display="none";
+    localStorage.setItem("cv_unlocked", Date.now());
+  }else{
+    document.getElementById("pin-err").textContent="Incorrect PIN — try again";
+    pinEntry="";
+    updateDots();
+    const box=document.querySelector(".pin-box");
+    box.style.animation="none";
+    setTimeout(()=>{box.style.animation="shake .3s ease";},10);
+  }
+}
+function openPinModal(){document.getElementById("pin-modal").classList.add("open");document.getElementById("pin-new").value="";document.getElementById("pin-modal-err").textContent="";}
+function closePinModal(){document.getElementById("pin-modal").classList.remove("open");}
+function saveNewPin(){
+  const v=document.getElementById("pin-new").value.trim();
+  const err=document.getElementById("pin-modal-err");
+  if(!/^\d{4}$/.test(v)){err.textContent="PIN must be exactly 4 digits";return;}
+  localStorage.setItem("cv_pin",v);
+  closePinModal();
+  alert("PIN updated successfully!");
+}
+// keyboard support for PIN
+document.addEventListener("keydown",e=>{
+  const ps=document.getElementById("pin-screen");
+  if(ps.style.display==="none")return;
+  if(e.key>="0"&&e.key<="9")pinPress(e.key);
+  if(e.key==="Backspace")pinDel();
+});
 
 const SEED=[
   {id:51,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
