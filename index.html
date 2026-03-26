@@ -17,6 +17,31 @@
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:13px;display:flex;min-height:100vh;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:24px 24px}
 button{cursor:pointer;font-family:inherit}
 input,select{font-family:inherit}
+
+/* PIN LOCK */
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+#pin-screen{display:flex;position:fixed;inset:0;background:var(--bg);z-index:999;align-items:center;justify-content:center;flex-direction:column;background-image:linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.06) 1px,transparent 1px);background-size:24px 24px}
+.pin-box{background:#fff;border:2px solid var(--pink);border-radius:20px;padding:36px 40px;text-align:center;box-shadow:0 8px 40px rgba(255,45,120,.15);width:320px}
+.pin-logo{font-size:26px;font-weight:800;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;margin-bottom:4px}
+.pin-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:28px}
+.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:24px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:#fff;transition:all .15s}
+.pin-dot.filled{background:var(--pink);border-color:var(--pink);transform:scale(1.1)}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.pin-key{background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:16px;font-size:18px;font-weight:700;color:var(--text);cursor:pointer;transition:all .15s;user-select:none}
+.pin-key:hover{background:var(--pink-lt);border-color:var(--pink);color:var(--pink)}
+.pin-key:active{transform:scale(.95)}
+.pin-key.del{color:var(--red);font-size:14px}
+.pin-key.zero{grid-column:2}
+.pin-err{color:var(--red);font-size:12px;font-weight:700;min-height:18px;margin-top:4px}
+.pin-hint{font-size:11px;color:var(--text3);margin-top:12px}
+
+/* CHANGE PIN MODAL */
+#pin-modal{display:none;position:fixed;inset:0;background:rgba(18,17,42,.5);z-index:300;align-items:center;justify-content:center}
+#pin-modal.open{display:flex}
+.pin-modal-box{background:#fff;border:2px solid var(--cyan);border-radius:16px;padding:28px 32px;text-align:center;width:300px;box-shadow:0 8px 40px rgba(0,204,240,.15)}
+
+/* SIDEBAR */
 #sidebar{width:210px;background:#fff;border-right:2px solid var(--pink);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;box-shadow:4px 0 20px rgba(255,45,120,.10)}
 .brand{padding:18px 16px 14px;border-bottom:2px solid var(--pink-lt)}
 .brand-name{font-size:20px;font-weight:800;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
@@ -30,6 +55,8 @@ nav{flex:1;padding:10px 0}
 .s-lbl{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .avatar-row{display:flex;flex-wrap:wrap;gap:4px}
 .av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;border:2px solid;flex-shrink:0}
+
+/* MAIN */
 #main{margin-left:210px;flex:1;display:flex;flex-direction:column;min-height:100vh}
 #topbar{background:#fff;border-bottom:2px solid var(--pink);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(255,45,120,.08);gap:12px}
 #topbar-title{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px;white-space:nowrap}
@@ -45,10 +72,14 @@ nav{flex:1;padding:10px 0}
 .btn-outline:hover{background:var(--cyan-lt)}
 #content{padding:24px;flex:1}
 .view{display:none}.view.active{display:block}
+
+/* STATS */
 .stat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
 .stat-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;border-top:3px solid}
 .stat-label{font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .stat-val{font-size:20px;font-weight:800;word-break:break-all}
+
+/* PANELS */
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
 .panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
 .panel-title{font-size:11px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px}
@@ -65,6 +96,8 @@ nav{flex:1;padding:10px 0}
 .tag-chip{border-radius:10px;padding:9px 16px;text-align:center;border:2px solid;min-width:70px}
 .tag-count{font-size:18px;font-weight:800}
 .tag-lbl{font-size:10px;margin-top:2px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+
+/* FILTERS & TABLE */
 .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .f-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text3);font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap}
 .f-btn:hover{border-color:var(--pink);color:var(--pink)}
@@ -101,6 +134,8 @@ td{padding:8px 10px;vertical-align:top}
 .lookup-btn:hover:not(:disabled){background:var(--cyan-lt)}
 .lookup-btn:disabled{opacity:.4;cursor:default}
 .mkt-info{font-size:10px;line-height:1.7;font-weight:600;min-width:120px}
+
+/* ADD CARD MODAL */
 #modal-overlay{display:none;position:fixed;inset:0;background:rgba(18,17,42,.5);z-index:200;align-items:center;justify-content:center}
 #modal-overlay.open{display:flex}
 #modal{background:#fff;border-radius:16px;width:640px;max-width:95vw;max-height:92vh;overflow-y:auto;border:2px solid var(--pink);box-shadow:0 8px 40px rgba(255,45,120,.20)}
@@ -120,9 +155,12 @@ td{padding:8px 10px;vertical-align:top}
 .cw input{flex:1}
 .cw select{width:78px;flex-shrink:0}
 .form-footer{display:flex;gap:10px;justify-content:flex-end;padding:14px 22px;border-top:1.5px solid var(--border)}
-.btn-save-form{background:var(--pink);border:none;border-radius:8px;color:#fff;padding:10px 22px;font-size:14px;font-weight:800;box-shadow:0 2px 8px rgba(255,45,120,.2)}
+.btn-save-form{background:var(--pink);border:none;border-radius:8px;color:#fff;padding:10px 22px;font-size:14px;font-weight:800}
 .btn-save-form:hover{background:#e0005a}
 .btn-cancel-form{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text3);padding:10px 18px;font-size:13px;font-weight:700}
+.form-err{color:var(--red);font-size:12px;font-weight:600;margin-top:10px;display:none}
+
+/* MARKET */
 .api-panel{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--cyan)}
 .api-panel input{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:8px 11px;font-size:12px;outline:none;width:300px;margin-right:8px}
 .api-panel input:focus{border-color:var(--cyan)}
@@ -135,7 +173,7 @@ td{padding:8px 10px;vertical-align:top}
 .fx-row{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px}
 .fx-item .fx-l{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;margin-bottom:3px}
 .fx-item .fx-v{font-size:18px;font-weight:800;color:var(--cyan)}
-.form-err{color:var(--red);font-size:12px;font-weight:600;margin-top:10px;display:none}
+
 @media(max-width:900px){.stat-grid{grid-template-columns:repeat(3,1fr)}.charts-row{grid-template-columns:1fr}}
 @media(max-width:640px){#sidebar{display:none}#main{margin-left:0}.stat-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}}
 </style>
@@ -144,7 +182,7 @@ td{padding:8px 10px;vertical-align:top}
 
 <!-- PIN LOCK SCREEN -->
 <div id="pin-screen">
-  <div class="pin-box">
+  <div class="pin-box" id="pin-box">
     <div class="pin-logo">CardVault</div>
     <div class="pin-sub">Enter PIN to access</div>
     <div class="pin-dots">
@@ -176,9 +214,8 @@ td{padding:8px 10px;vertical-align:top}
   <div class="pin-modal-box">
     <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">Change PIN</div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:20px">Enter a new 4-digit PIN</div>
-    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
-      <input id="pin-new" type="password" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="New PIN" style="width:120px;text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px;outline:none">
-    </div>
+    <input id="pin-new" type="password" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="New PIN"
+      style="width:130px;text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px;outline:none;display:block;margin:0 auto 16px">
     <div style="display:flex;gap:8px;justify-content:center">
       <button onclick="closePinModal()" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--text3)">Cancel</button>
       <button onclick="saveNewPin()" style="background:var(--cyan);border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;color:#fff">Save PIN</button>
@@ -187,6 +224,7 @@ td{padding:8px 10px;vertical-align:top}
   </div>
 </div>
 
+<!-- SIDEBAR -->
 <div id="sidebar">
   <div class="brand"><div class="brand-name">CardVault</div><div class="brand-sub">Portfolio Tracker</div></div>
   <nav>
@@ -196,7 +234,7 @@ td{padding:8px 10px;vertical-align:top}
     <button class="nav-btn" onclick="showView('portfolio',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Portfolio
     </button>
-          <button class="nav-btn" onclick="showView('market',this)">
+    <button class="nav-btn" onclick="showView('market',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg>Market Lookup
     </button>
     <button class="nav-btn" onclick="exportCSV()">
@@ -212,6 +250,7 @@ td{padding:8px 10px;vertical-align:top}
   </div>
 </div>
 
+<!-- MAIN -->
 <div id="main">
   <div id="topbar">
     <div id="topbar-title">Dashboard</div>
@@ -233,6 +272,7 @@ td{padding:8px 10px;vertical-align:top}
   </div>
 
   <div id="content">
+    <!-- DASHBOARD -->
     <div id="view-dashboard" class="view active">
       <div class="stat-grid" id="stat-grid"></div>
       <div class="charts-row">
@@ -242,14 +282,16 @@ td{padding:8px 10px;vertical-align:top}
       <div class="panel"><div class="panel-title">Card Type Breakdown</div><div class="tags-row" id="tag-breakdown"></div></div>
     </div>
 
+    <!-- PORTFOLIO -->
     <div id="view-portfolio" class="view">
       <div class="filter-row" id="player-filters"></div>
       <div class="table-wrap"><div class="tbl-scroll">
         <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
       </div></div>
-      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Sale $ to enter price &nbsp;·&nbsp; Click Hold/Sold badge to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
+      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Sale $ to enter price &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
     </div>
 
+    <!-- MARKET -->
     <div id="view-market" class="view">
       <div class="api-panel">
         <div class="panel-title" style="margin-bottom:8px;color:var(--cyan)">Anthropic API Key — Required for Market Lookup</div>
@@ -289,14 +331,18 @@ td{padding:8px 10px;vertical-align:top}
         <div class="fg full"><label>Set / Product *</label><input id="f-set" placeholder="e.g. 2025-26 Panini 爱咪咪"></div>
         <div class="fg full"><label>Card Description *</label><input id="f-card" placeholder="e.g. Rookie Patch Auto #IPA-XX"></div>
         <div class="fg"><label>Serial Number</label><input id="f-serial" placeholder="e.g. 32/99 or 5/5"></div>
-        <div class="fg"><label>Grade</label><input id="f-grade" list="grade-list" placeholder="Raw / PSA 10 / etc."><datalist id="grade-list"><option value="Raw"><option value="PSA 10"><option value="PSA 9"><option value="PSA 8"><option value="PSA 7"><option value="BGS 9.5"><option value="BGS 9"><option value="SGC 10"><option value="SGC 9.5"><option value="SGC 9"><option value="MNT 9"><option value="Raw (MINT)"></datalist></div>
+        <div class="fg"><label>Grade</label><input id="f-grade" list="grade-list" placeholder="Raw / PSA 10 / etc.">
+          <datalist id="grade-list"><option value="Raw"><option value="PSA 10"><option value="PSA 9"><option value="PSA 8"><option value="PSA 7"><option value="BGS 9.5"><option value="BGS 9"><option value="SGC 10"><option value="SGC 9.5"><option value="SGC 9"><option value="MNT 9"><option value="Raw (MINT)"></datalist>
+        </div>
         <div class="fg"><label>Card Type *</label>
           <select id="f-tag"><option value="rc">RC — Rookie Card</option><option value="auto">Auto — Autograph</option><option value="rpa">RPA — Rookie Patch Auto</option><option value="refractor">Refractor / Parallel</option><option value="insert">Insert / SP</option><option value="ssp">SSP — Super Short Print</option><option value="relic">Relic / Patch / GU</option></select>
         </div>
         <div class="fg"><label>Purchase Price *</label>
           <div class="cw"><input id="f-cost" type="number" min="0" step="0.01" placeholder="0.00"><select id="f-currency"><option value="USD">USD</option><option value="CAD">CAD</option><option value="CNY">CNY</option></select></div>
         </div>
-        <div class="fg"><label>Platform / Source</label><input id="f-source" list="source-list" placeholder="eBay / Card Hobby / Show"><datalist id="source-list"><option value="eBay"><option value="Card Hobby"><option value="Show"><option value="PWCC"><option value="Goldin"><option value="开盒"></datalist></div>
+        <div class="fg"><label>Platform / Source</label><input id="f-source" list="source-list" placeholder="eBay / Card Hobby / Show">
+          <datalist id="source-list"><option value="eBay"><option value="Card Hobby"><option value="Show"><option value="PWCC"><option value="Goldin"><option value="开盒"></datalist>
+        </div>
         <div class="fg full"><label>Notes</label><input id="f-notes" placeholder="e.g. Storing in China warehouse / Sending to PSA"></div>
       </div>
       <div class="form-err" id="form-error"></div>
@@ -315,57 +361,45 @@ const TAG_COLORS={auto:"#7c3aed",rpa:"#ff2d78",ssp:"#c68a00",rc:"#00a844",refrac
 const TAG_LABELS={auto:"AUTO",rpa:"RPA",ssp:"SSP",rc:"RC",refractor:"REFR",insert:"INSERT",relic:"RELIC"};
 const DEFAULT_PIN="8888";
 
-// PIN LOGIC
+// ── PIN ──────────────────────────────────────────────
 let pinEntry="";
-function getPin(){return localStorage.getItem("cv_pin")||DEFAULT_PIN;}
+const getPin=()=>localStorage.getItem("cv_pin")||DEFAULT_PIN;
 function pinPress(d){
   if(pinEntry.length>=4)return;
-  pinEntry+=d;
-  updateDots();
+  pinEntry+=d;updateDots();
   if(pinEntry.length===4)setTimeout(checkPin,120);
 }
-function pinDel(){if(pinEntry.length>0){pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById("pin-err").textContent="";}}
-function updateDots(){
-  for(let i=0;i<4;i++){
-    const dot=document.getElementById("d"+i);
-    dot.classList.toggle("filled",i<pinEntry.length);
-  }
-}
+function pinDel(){if(!pinEntry.length)return;pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById("pin-err").textContent="";}
+function updateDots(){for(let i=0;i<4;i++)document.getElementById("d"+i).classList.toggle("filled",i<pinEntry.length);}
 function checkPin(){
   if(pinEntry===getPin()){
     document.getElementById("pin-screen").style.display="none";
-    localStorage.setItem("cv_unlocked", Date.now());
   }else{
     document.getElementById("pin-err").textContent="Incorrect PIN — try again";
-    pinEntry="";
-    updateDots();
-    const box=document.querySelector(".pin-box");
-    box.style.animation="none";
-    setTimeout(()=>{box.style.animation="shake .3s ease";},10);
+    pinEntry="";updateDots();
+    const b=document.getElementById("pin-box");
+    b.style.animation="none";
+    requestAnimationFrame(()=>{b.style.animation="shake .35s ease";});
   }
 }
 function openPinModal(){document.getElementById("pin-modal").classList.add("open");document.getElementById("pin-new").value="";document.getElementById("pin-modal-err").textContent="";}
 function closePinModal(){document.getElementById("pin-modal").classList.remove("open");}
 function saveNewPin(){
   const v=document.getElementById("pin-new").value.trim();
-  const err=document.getElementById("pin-modal-err");
-  if(!/^\d{4}$/.test(v)){err.textContent="PIN must be exactly 4 digits";return;}
-  localStorage.setItem("cv_pin",v);
-  closePinModal();
-  alert("PIN updated successfully!");
+  if(!/^\d{4}$/.test(v)){document.getElementById("pin-modal-err").textContent="PIN must be exactly 4 digits";return;}
+  localStorage.setItem("cv_pin",v);closePinModal();alert("✅ PIN updated successfully!");
 }
-// keyboard support for PIN
 document.addEventListener("keydown",e=>{
-  const ps=document.getElementById("pin-screen");
-  if(ps.style.display==="none")return;
+  if(document.getElementById("pin-screen").style.display==="none")return;
   if(e.key>="0"&&e.key<="9")pinPress(e.key);
   if(e.key==="Backspace")pinDel();
 });
 
+// ── DATA ─────────────────────────────────────────────
 const SEED=[
   {id:51,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
-  {id:52,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:""},
-  {id:53,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:""},
+  {id:52,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:"",salePrice:null,status:"In Collection"},
+  {id:53,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:"",salePrice:null,status:"In Collection"},
   {id:1,player:"Kon Knueppel",date:"2026-03-22",set:"2025-26 Topps Chrome",card:"Rookie Auto #NS-KK Green Refractor",serial:"32/99",grade:"Raw",cost:923.38,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
   {id:2,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps '80-81 Chrome",card:"#TCKK Rookie RC",serial:"",grade:"Raw",cost:41.37,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
   {id:3,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps Chrome '80-81",card:"#TC-KK Silver Rookie RC",serial:"",grade:"Raw",cost:43.83,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
@@ -444,6 +478,7 @@ function calcStats(){
   return{tc,inColCost:inCol.reduce((s,c)=>s+c.cost,0),rev,pnl:rev-sc,count:cards.length,inCol:inCol.length,soldCount:sold.length};
 }
 
+// ── INIT ─────────────────────────────────────────────
 document.getElementById("today-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
 document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
 load();buildAvatars();
@@ -471,6 +506,7 @@ function showView(id,btn){
   else if(id==="market")renderMarket();
 }
 
+// ── DASHBOARD ────────────────────────────────────────
 function renderDashboard(){
   const s=calcStats();
   document.getElementById("stat-grid").innerHTML=[
@@ -490,6 +526,7 @@ function renderDashboard(){
   document.getElementById("tag-breakdown").innerHTML=Object.entries(TAG_COLORS).map(([tag,col])=>{const n=cards.filter(c=>c.tag===tag).length;return n?`<div class="tag-chip" style="background:${col}18;border-color:${col}"><div class="tag-count" style="color:${col}">${n}</div><div class="tag-lbl" style="color:${col}">${tag}</div></div>`:"";}).join("");
 }
 
+// ── PORTFOLIO ────────────────────────────────────────
 function renderPortfolio(){
   const search=document.getElementById("search-input").value.toLowerCase();
   document.getElementById("player-filters").innerHTML=[{l:`All (${cards.length})`,v:"All",c:null},...getPlayers().map(p=>({l:p,v:p,c:pColor(p)}))].map(f=>{
@@ -517,25 +554,17 @@ function renderPortfolio(){
     const pc=pColor(c.player);
     const isExp=expanded.has(c.id);
     const descHtml=`<div class="desc-cell"><div class="${isExp?"":"desc-collapsed"}"><div class="desc-main">${esc(c.card)}</div><div class="desc-meta">${esc(c.set)}${c.serial?` &nbsp;·&nbsp; <strong style="color:var(--yellow)">${esc(c.serial)}</strong>`:""}${c.notes?` &nbsp;·&nbsp; <span style="color:var(--purple)">📝 ${esc(c.notes)}</span>`:""}</div></div><button class="expand-btn" onclick="toggleExp(${c.id})">${isExp?"▲ Collapse":"▼ Full details"}</button></div>`;
-
     let mktHtml;
     if(c.market&&!c.market.loading&&!c.market.error){
       mktHtml=`<div class="mkt-info"><div style="color:var(--cyan)">🇺🇸 ${fmt(c.market.us_low)}–${fmt(c.market.us_high)}</div><div style="color:var(--yellow)">🇨🇳 ${fmt(c.market.china_low)}–${fmt(c.market.china_high)}</div><div style="color:${c.market.trend==="up"?"var(--green)":c.market.trend==="down"?"var(--red)":"var(--text3)"}">${c.market.trend==="up"?"↑ up":c.market.trend==="down"?"↓ down":"→ stable"}</div></div>`;
-    }else if(c.market&&c.market.loading){
-      mktHtml=`<span style="color:var(--cyan);font-size:11px">loading…</span>`;
-    }else if(c.market&&c.market.error){
-      mktHtml=`<span style="color:var(--red);font-size:11px">error</span>`;
-    }else{
-      mktHtml=`<button class="lookup-btn" onclick="lookupMarket(${c.id})"${!apiKey?" disabled title='Add API key in Market tab'":""}>Lookup</button>`;
-    }
-
+    }else if(c.market?.loading){mktHtml=`<span style="color:var(--cyan);font-size:11px">loading…</span>`;}
+    else if(c.market?.error){mktHtml=`<span style="color:var(--red);font-size:11px">error</span>`;}
+    else{mktHtml=`<button class="lookup-btn" onclick="lookupMarket(${c.id})"${!apiKey?" disabled title='Add API key in Market tab'":""}>Lookup</button>`;}
     const saleHtml=editingId===c.id
       ?`<div class="sale-iw"><input class="sale-inp" id="si-${c.id}" type="number" step="0.01" value="${c.salePrice!=null?c.salePrice:""}" onkeydown="if(event.key==='Enter')saveSale(${c.id})"><button class="btn-sm btn-ok" onclick="saveSale(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelEdit()">✕</button></div>`
       :`<span class="sale-cell" onclick="startEdit(${c.id})" style="color:${c.salePrice!=null?"var(--green)":"var(--text3)"};font-weight:${c.salePrice!=null?700:400}">${c.salePrice!=null?fmt(c.salePrice):"+ add"}</span>`;
-
     return`<tr><td style="color:var(--text3);font-size:11px;white-space:nowrap">${c.date.slice(5)}</td><td><div class="player-cell"><div class="p-av" style="background:${pc}22;border-color:${pc};color:${pc}">${initials(c.player)}</div><span class="p-name">${esc(c.player.split(" ").at(-1))}</span></div></td><td>${descHtml}</td><td style="color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap">${esc(c.grade)}</td><td><span class="badge" style="background:${tc}18;color:${tc};border-color:${tc}">${TAG_LABELS[c.tag]||c.tag}</span></td><td style="color:var(--pink);font-weight:800;white-space:nowrap">${fmt(c.cost)}</td><td>${saleHtml}</td><td style="color:${pnlClr(pnl)};font-weight:800;white-space:nowrap">${pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—"}</td><td><span class="status-pill" onclick="toggleStatus(${c.id})" style="background:${c.status==="Sold"?"#e6fff0":"#e8f4ff"};color:${c.status==="Sold"?"var(--green)":"var(--cyan)"};border-color:${c.status==="Sold"?"var(--green)":"var(--cyan)"}">${c.status==="Sold"?"Sold":"Hold"}</span></td><td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(c.source||"eBay")}</td><td>${mktHtml}</td></tr>`;
   }).join("");
-
   if(editingId!=null){requestAnimationFrame(()=>{const el=document.getElementById(`si-${editingId}`);if(el){el.focus();el.select();}});}
 }
 
@@ -552,6 +581,7 @@ function saveSale(id){
 }
 function toggleStatus(id){cards=cards.map(c=>c.id===id?{...c,status:c.status==="Sold"?"In Collection":"Sold"}:c);save();renderPortfolio();}
 
+// ── ADD CARD MODAL ───────────────────────────────────
 function openModal(){document.getElementById("modal-overlay").classList.add("open");buildAvatars();setTimeout(()=>document.getElementById("f-player").focus(),100);}
 function closeModal(){document.getElementById("modal-overlay").classList.remove("open");document.getElementById("form-error").style.display="none";}
 function saveCard(){
@@ -577,6 +607,7 @@ function saveCard(){
   showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
 }
 
+// ── IMPORT CSV ───────────────────────────────────────
 function importCSV(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -612,6 +643,7 @@ function importCSV(event){
   reader.readAsText(file,"UTF-8");
 }
 
+// ── MARKET ───────────────────────────────────────────
 function renderMarket(){
   if(apiKey)document.getElementById("key-status").innerHTML='<span style="color:var(--green);font-weight:700">✓ API key saved</span>';
   document.getElementById("api-key-input").value=apiKey;
@@ -634,6 +666,7 @@ async function lookupMarket(id){
   save();renderPortfolio();
 }
 
+// ── EXPORT CSV ───────────────────────────────────────
 function exportCSV(){
   const h=["ID","Player","Date","Set","Card","Serial","Grade","Type","Cost(USD)","Sale Price","P&L","Status","Source","Notes"];
   const rows=cards.map(c=>{const p=c.salePrice!=null?(c.salePrice-c.cost).toFixed(2):"";const qt=s=>`"${String(s||"").replace(/"/g,'""')}"`;return[c.id,qt(c.player),c.date,qt(c.set),qt(c.card),c.serial||"",c.grade,c.tag,c.cost.toFixed(2),c.salePrice!=null?c.salePrice.toFixed(2):"",p,c.status,c.source||"",qt(c.notes||"")].join(",");});
