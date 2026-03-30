@@ -288,7 +288,7 @@ td{padding:8px 10px;vertical-align:top}
       <div class="table-wrap"><div class="tbl-scroll">
         <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
       </div></div>
-      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Sale $ to enter price &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
+      <div class="hint">Click description to expand &nbsp;·&nbsp; Click <strong>Cost</strong> or Sale $ to edit &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
     </div>
 
     <!-- MARKET -->
@@ -400,6 +400,11 @@ const SEED=[
   {id:51,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
   {id:52,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:"",salePrice:null,status:"In Collection"},
   {id:53,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:"",salePrice:null,status:"In Collection"},
+  {id:54,player:"Cade Cunningham",date:"2026-03-30",set:"2023-24 Panini Flawless",card:"Signature Prime Materials Ruby",serial:"15/15",grade:"BGS 8.5 / Auto 10",cost:2399.73,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:55,player:"Brandon Miller",date:"2026-03-29",set:"2023-24 Panini Prizm",card:"Pink Ice #152 RC (2nd)",serial:"",grade:"PSA 10",cost:73.39,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:56,player:"Damian Lillard",date:"2026-03-29",set:"2025-26 Topps Chrome",card:"Orange Geometric #153",serial:"17/25",grade:"Raw",cost:15.77,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:57,player:"Damian Lillard",date:"2026-03-29",set:"2024-25 Panini Select",card:"Premier Level #145 Light Blue Prizm",serial:"/299",grade:"Raw",cost:2.64,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  {id:58,player:"Damian Lillard",date:"2026-03-27",set:"2022-23 Panini Impeccable",card:"Red #34",serial:"15/49",grade:"Raw",cost:11.73,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
   {id:1,player:"Kon Knueppel",date:"2026-03-22",set:"2025-26 Topps Chrome",card:"Rookie Auto #NS-KK Green Refractor",serial:"32/99",grade:"Raw",cost:923.38,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
   {id:2,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps '80-81 Chrome",card:"#TCKK Rookie RC",serial:"",grade:"Raw",cost:41.37,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
   {id:3,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps Chrome '80-81",card:"#TC-KK Silver Rookie RC",serial:"",grade:"Raw",cost:43.83,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
@@ -452,7 +457,7 @@ const SEED=[
   {id:50,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
 ];
 
-let cards=[],nextId=54,sortCol="date",sortDir="desc",playerFilter="All",editingId=null;
+let cards=[],nextId=59,sortCol="date",sortDir="desc",playerFilter="All",editingId=null,editingCostId=null;
 const expanded=new Set();
 let apiKey=localStorage.getItem("cv_key")||"";
 
@@ -560,24 +565,35 @@ function renderPortfolio(){
     }else if(c.market?.loading){mktHtml=`<span style="color:var(--cyan);font-size:11px">loading…</span>`;}
     else if(c.market?.error){mktHtml=`<span style="color:var(--red);font-size:11px">error</span>`;}
     else{mktHtml=`<button class="lookup-btn" onclick="lookupMarket(${c.id})"${!apiKey?" disabled title='Add API key in Market tab'":""}>Lookup</button>`;}
+    const costHtml=editingCostId===c.id
+      ?`<div class="sale-iw"><input class="sale-inp" id="ci-${c.id}" type="number" step="0.01" value="${c.cost}" onkeydown="if(event.key==='Enter')saveCost(${c.id})"><button class="btn-sm btn-ok" onclick="saveCost(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelCostEdit()">✕</button></div>`
+      :`<span class="sale-cell" onclick="startCostEdit(${c.id})" style="color:var(--pink);font-weight:800">${fmt(c.cost)}</span>`;
     const saleHtml=editingId===c.id
       ?`<div class="sale-iw"><input class="sale-inp" id="si-${c.id}" type="number" step="0.01" value="${c.salePrice!=null?c.salePrice:""}" onkeydown="if(event.key==='Enter')saveSale(${c.id})"><button class="btn-sm btn-ok" onclick="saveSale(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelEdit()">✕</button></div>`
       :`<span class="sale-cell" onclick="startEdit(${c.id})" style="color:${c.salePrice!=null?"var(--green)":"var(--text3)"};font-weight:${c.salePrice!=null?700:400}">${c.salePrice!=null?fmt(c.salePrice):"+ add"}</span>`;
-    return`<tr><td style="color:var(--text3);font-size:11px;white-space:nowrap">${c.date.slice(5)}</td><td><div class="player-cell"><div class="p-av" style="background:${pc}22;border-color:${pc};color:${pc}">${initials(c.player)}</div><span class="p-name">${esc(c.player.split(" ").at(-1))}</span></div></td><td>${descHtml}</td><td style="color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap">${esc(c.grade)}</td><td><span class="badge" style="background:${tc}18;color:${tc};border-color:${tc}">${TAG_LABELS[c.tag]||c.tag}</span></td><td style="color:var(--pink);font-weight:800;white-space:nowrap">${fmt(c.cost)}</td><td>${saleHtml}</td><td style="color:${pnlClr(pnl)};font-weight:800;white-space:nowrap">${pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—"}</td><td><span class="status-pill" onclick="toggleStatus(${c.id})" style="background:${c.status==="Sold"?"#e6fff0":"#e8f4ff"};color:${c.status==="Sold"?"var(--green)":"var(--cyan)"};border-color:${c.status==="Sold"?"var(--green)":"var(--cyan)"}">${c.status==="Sold"?"Sold":"Hold"}</span></td><td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(c.source||"eBay")}</td><td>${mktHtml}</td></tr>`;
+    return`<tr><td style="color:var(--text3);font-size:11px;white-space:nowrap">${c.date.slice(5)}</td><td><div class="player-cell"><div class="p-av" style="background:${pc}22;border-color:${pc};color:${pc}">${initials(c.player)}</div><span class="p-name">${esc(c.player.split(" ").at(-1))}</span></div></td><td>${descHtml}</td><td style="color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap">${esc(c.grade)}</td><td><span class="badge" style="background:${tc}18;color:${tc};border-color:${tc}">${TAG_LABELS[c.tag]||c.tag}</span></td><td>${costHtml}</td><td>${saleHtml}</td><td style="color:${pnlClr(pnl)};font-weight:800;white-space:nowrap">${pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—"}</td><td><span class="status-pill" onclick="toggleStatus(${c.id})" style="background:${c.status==="Sold"?"#e6fff0":"#e8f4ff"};color:${c.status==="Sold"?"var(--green)":"var(--cyan)"};border-color:${c.status==="Sold"?"var(--green)":"var(--cyan)"}">${c.status==="Sold"?"Sold":"Hold"}</span></td><td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(c.source||"eBay")}</td><td>${mktHtml}</td></tr>`;
   }).join("");
-  if(editingId!=null){requestAnimationFrame(()=>{const el=document.getElementById(`si-${editingId}`);if(el){el.focus();el.select();}});}
+  if(editingId!=null||editingCostId!=null){requestAnimationFrame(()=>{const el=document.getElementById(`si-${editingId}`)||document.getElementById(`ci-${editingCostId}`);if(el){el.focus();el.select();}});}
 }
 
 function toggleExp(id){expanded.has(id)?expanded.delete(id):expanded.add(id);renderPortfolio();}
 function setFilter(v){playerFilter=v;renderPortfolio();}
 function setSort(col){sortDir=sortCol===col&&sortDir==="asc"?"desc":"asc";sortCol=col;renderPortfolio();}
-function startEdit(id){editingId=id;renderPortfolio();}
+function startEdit(id){editingId=id;editingCostId=null;renderPortfolio();}
 function cancelEdit(){editingId=null;renderPortfolio();}
 function saveSale(id){
   const el=document.getElementById(`si-${id}`);if(!el)return;
   const v=parseFloat(el.value);
   cards=cards.map(c=>c.id===id?{...c,salePrice:isNaN(v)?null:v,status:isNaN(v)?c.status:"Sold"}:c);
   editingId=null;save();renderPortfolio();
+}
+function startCostEdit(id){editingCostId=id;editingId=null;renderPortfolio();}
+function cancelCostEdit(){editingCostId=null;renderPortfolio();}
+function saveCost(id){
+  const el=document.getElementById(`ci-${id}`);if(!el)return;
+  const v=parseFloat(el.value);
+  if(!isNaN(v)&&v>=0)cards=cards.map(c=>c.id===id?{...c,cost:v}:c);
+  editingCostId=null;save();renderPortfolio();
 }
 function toggleStatus(id){cards=cards.map(c=>c.id===id?{...c,status:c.status==="Sold"?"In Collection":"Sold"}:c);save();renderPortfolio();}
 
