@@ -288,6 +288,16 @@ td{padding:8px 10px;vertical-align:top}
 
     <!-- PORTFOLIO -->
     <div id="view-portfolio" class="view">
+      <!-- Status filter -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+        <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap">Show:</span>
+        <button id="sf-hold" onclick="setStatusFilter('In Collection')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--cyan);color:#fff;border-color:var(--cyan)">📦 Holdings</button>
+        <button id="sf-sold" onclick="setStatusFilter('Sold')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff;color:var(--text3);border-color:var(--border)">✅ Sold</button>
+        <button id="sf-all" onclick="setStatusFilter('All')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff;color:var(--text3);border-color:var(--border)">All</button>
+      </div>
+      <!-- Mini summary bar -->
+      <div id="portfolio-summary" style="margin-bottom:12px"></div>
+      <!-- Player filters -->
       <div class="filter-row" id="player-filters"></div>
       <div class="table-wrap"><div class="tbl-scroll">
         <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
@@ -476,7 +486,7 @@ const SEED=[
   {id:68,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:""},
 ];
 
-let cards=[],nextId=69,sortCol="date",sortDir="desc",playerFilter="All",editingId=null,editingCostId=null;
+let cards=[],nextId=69,sortCol="date",sortDir="desc",playerFilter="All",statusFilter="In Collection",editingId=null,editingCostId=null;
 const expanded=new Set();
 let apiKey=localStorage.getItem("cv_key")||"";
 
@@ -601,14 +611,70 @@ function renderDashboard(){
   }).join("");
 }
 
+function setStatusFilter(v){
+  statusFilter=v;
+  playerFilter="All"; // reset player filter on status change
+  // update button styles
+  const styles={
+    "In Collection":{bg:"var(--cyan)",fg:"#fff",bc:"var(--cyan)"},
+    "Sold":{bg:"var(--green)",fg:"#fff",bc:"var(--green)"},
+    "All":{bg:"var(--purple)",fg:"#fff",bc:"var(--purple)"},
+  };
+  [["sf-hold","In Collection"],["sf-sold","Sold"],["sf-all","All"]].forEach(([id,val])=>{
+    const btn=document.getElementById(id);
+    if(!btn)return;
+    if(val===v){btn.style.background=styles[val].bg;btn.style.color=styles[val].fg;btn.style.borderColor=styles[val].bc;}
+    else{btn.style.background="#fff";btn.style.color="var(--text3)";btn.style.borderColor="var(--border)";}
+  });
+  renderPortfolio();
+}
+
 function renderPortfolio(){
   const search=document.getElementById("search-input").value.toLowerCase();
-  document.getElementById("player-filters").innerHTML=[{l:"All ("+cards.length+")",v:"All",c:null},...getPlayers().map(p=>({l:p,v:p,c:pColor(p)}))].map(f=>{
+
+  // base filtered by status
+  const statusFiltered=statusFilter==="All"?cards:cards.filter(c=>c.status===statusFilter);
+
+  // mini summary bar
+  const summaryEl=document.getElementById("portfolio-summary");
+  if(summaryEl){
+    if(statusFilter==="In Collection"){
+      const cost=statusFiltered.reduce((s,c)=>s+c.cost,0);
+      const byPlayer=getPlayers().filter(p=>statusFiltered.some(c=>c.player===p));
+      summaryEl.innerHTML="<div style='background:#e8f4ff;border:1.5px solid var(--cyan);border-radius:10px;padding:10px 16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap'>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--cyan)'>📦 "+statusFiltered.length+" cards in hand</span>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--purple)'>💸 Cost basis: "+fmtS(cost)+"</span>"+
+        "<span style='font-size:12px;color:var(--text3)'>"+byPlayer.length+" players</span>"+
+        "</div>";
+    }else if(statusFilter==="Sold"){
+      const revenue=statusFiltered.reduce((s,c)=>s+(c.salePrice||0),0);
+      const cost=statusFiltered.reduce((s,c)=>s+c.cost,0);
+      const profit=revenue-cost;
+      const roi=cost>0?((profit/cost)*100).toFixed(1):0;
+      const pColor=profit>=0?"var(--green)":"var(--red)";
+      summaryEl.innerHTML="<div style='background:#e6fff0;border:1.5px solid var(--green);border-radius:10px;padding:10px 16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap'>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--green)'>✅ "+statusFiltered.length+" cards sold</span>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--green)'>💰 Revenue: "+fmtS(revenue)+"</span>"+
+        "<span style='font-size:13px;font-weight:700;color:"+pColor+"'>P&L: "+(profit>=0?"+":"")+fmtS(profit)+"</span>"+
+        "<span style='font-size:12px;color:var(--text3)'>ROI: <strong style='color:"+pColor+"'>"+(profit>=0?"+":"")+roi+"%</strong></span>"+
+        "</div>";
+    }else{
+      summaryEl.innerHTML="<div style='background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap'>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--purple)'>All "+cards.length+" cards</span>"+
+        "<span style='font-size:13px;font-weight:700;color:var(--text2)'>Total spent: "+fmtS(cards.reduce((s,c)=>s+c.cost,0))+"</span>"+
+        "</div>";
+    }
+  }
+
+  // player filters — scoped to status filter
+  const playersInView=[...new Set(statusFiltered.map(c=>c.player))];
+  document.getElementById("player-filters").innerHTML=[{l:"All ("+statusFiltered.length+")",v:"All",c:null},...playersInView.map(p=>({l:p+" ("+statusFiltered.filter(c=>c.player===p).length+")",v:p,c:pColor(p)}))].map(f=>{
     const a=playerFilter===f.v;
     return "<button class='f-btn' style='background:"+(a?(f.c||"var(--pink)"):"#fff")+";color:"+(a?"#fff":(f.c||"var(--text3)"))+";border-color:"+(a?(f.c||"var(--pink)"):"var(--border)")+"' onclick=\"setFilter('"+esc(f.v)+"')\">"+esc(f.l)+"</button>";
   }).join("");
 
-  let data=[...cards].filter(c=>{
+  // final filtered data
+  let data=statusFiltered.filter(c=>{
     if(playerFilter!=="All"&&c.player!==playerFilter)return false;
     if(search&&![c.player,c.card,c.set,c.grade,c.notes||"",c.source||""].join(" ").toLowerCase().includes(search))return false;
     return true;
