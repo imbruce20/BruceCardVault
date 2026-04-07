@@ -9,7 +9,7 @@
   --bg:#f0eeff;--panel:#fff;--border:#e2d8ff;
   --text:#12112a;--text2:#4a4870;--text3:#9896bb;
   --pink:#ff2d78;--cyan:#00ccf0;--yellow:#e6a800;
-  --purple:#7c3aed;--green:#00a844;--red:#ff1744;--orange:#ff6d00;
+  --purple:#7c3aed;--green:#00a844;--red:#ff1744;
   --pink-lt:#fff0f5;--cyan-lt:#e8fbff;
   --shadow:0 2px 12px rgba(255,45,120,.08);
 }
@@ -17,10 +17,10 @@
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;font-size:13px;display:flex;min-height:100vh;background-image:linear-gradient(rgba(124,58,237,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.04) 1px,transparent 1px);background-size:24px 24px}
 button{cursor:pointer;font-family:inherit}
 input,select{font-family:inherit}
-
-/* PIN LOCK */
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
-#pin-screen{display:flex;position:fixed;inset:0;background:var(--bg);z-index:999;align-items:center;justify-content:center;flex-direction:column;background-image:linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.06) 1px,transparent 1px);background-size:24px 24px}
+
+/* PIN */
+#pin-screen{display:flex;position:fixed;inset:0;background:var(--bg);z-index:999;align-items:center;justify-content:center;background-image:linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.06) 1px,transparent 1px);background-size:24px 24px}
 .pin-box{background:#fff;border:2px solid var(--pink);border-radius:20px;padding:36px 40px;text-align:center;box-shadow:0 8px 40px rgba(255,45,120,.15);width:320px}
 .pin-logo{font-size:26px;font-weight:800;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;margin-bottom:4px}
 .pin-sub{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:28px}
@@ -35,11 +35,9 @@ input,select{font-family:inherit}
 .pin-key.zero{grid-column:2}
 .pin-err{color:var(--red);font-size:12px;font-weight:700;min-height:18px;margin-top:4px}
 .pin-hint{font-size:11px;color:var(--text3);margin-top:12px}
-
-/* CHANGE PIN MODAL */
 #pin-modal{display:none;position:fixed;inset:0;background:rgba(18,17,42,.5);z-index:300;align-items:center;justify-content:center}
 #pin-modal.open{display:flex}
-.pin-modal-box{background:#fff;border:2px solid var(--cyan);border-radius:16px;padding:28px 32px;text-align:center;width:300px;box-shadow:0 8px 40px rgba(0,204,240,.15)}
+.pin-modal-box{background:#fff;border:2px solid var(--cyan);border-radius:16px;padding:28px 32px;text-align:center;width:300px}
 
 /* SIDEBAR */
 #sidebar{width:210px;background:#fff;border-right:2px solid var(--pink);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;box-shadow:4px 0 20px rgba(255,45,120,.10)}
@@ -73,11 +71,17 @@ nav{flex:1;padding:10px 0}
 #content{padding:24px;flex:1}
 .view{display:none}.view.active{display:block}
 
-/* STATS */
-.stat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+/* DASHBOARD */
+.stat-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:14px}
 .stat-card{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;border-top:3px solid}
 .stat-label{font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .stat-val{font-size:20px;font-weight:800;word-break:break-all}
+.fin-bar{display:grid;grid-template-columns:repeat(4,1fr);border-radius:12px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:18px;background:#fff}
+.fin-cell{padding:16px 20px;border-right:1px solid var(--border)}
+.fin-cell:last-child{border-right:none}
+.fin-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.fin-val{font-size:24px;font-weight:800;line-height:1}
+.fin-sub{font-size:11px;color:var(--text3);margin-top:5px}
 
 /* PANELS */
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
@@ -97,7 +101,7 @@ nav{flex:1;padding:10px 0}
 .tag-count{font-size:18px;font-weight:800}
 .tag-lbl{font-size:10px;margin-top:2px;text-transform:uppercase;letter-spacing:.8px;font-weight:700}
 
-/* FILTERS & TABLE */
+/* TABLE */
 .filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .f-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text3);font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap}
 .f-btn:hover{border-color:var(--pink);color:var(--pink)}
@@ -174,22 +178,20 @@ td{padding:8px 10px;vertical-align:top}
 .fx-item .fx-l{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;margin-bottom:3px}
 .fx-item .fx-v{font-size:18px;font-weight:800;color:var(--cyan)}
 
-@media(max-width:900px){.stat-grid{grid-template-columns:repeat(3,1fr)}.charts-row{grid-template-columns:1fr}}
-@media(max-width:640px){#sidebar{display:none}#main{margin-left:0}.stat-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}}
+@media(max-width:900px){.stat-grid{grid-template-columns:repeat(3,1fr)}.charts-row{grid-template-columns:1fr}.fin-bar{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){#sidebar{display:none}#main{margin-left:0}.stat-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.fg.full{grid-column:1}.fin-bar{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 
-<!-- PIN LOCK SCREEN -->
+<!-- PIN LOCK -->
 <div id="pin-screen">
   <div class="pin-box" id="pin-box">
     <div class="pin-logo">CardVault</div>
     <div class="pin-sub">Enter PIN to access</div>
     <div class="pin-dots">
-      <div class="pin-dot" id="d0"></div>
-      <div class="pin-dot" id="d1"></div>
-      <div class="pin-dot" id="d2"></div>
-      <div class="pin-dot" id="d3"></div>
+      <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
     </div>
     <div class="pin-grid">
       <button class="pin-key" onclick="pinPress('1')">1</button>
@@ -214,7 +216,7 @@ td{padding:8px 10px;vertical-align:top}
   <div class="pin-modal-box">
     <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px">Change PIN</div>
     <div style="font-size:11px;color:var(--text3);margin-bottom:20px">Enter a new 4-digit PIN</div>
-    <input id="pin-new" type="password" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="New PIN"
+    <input id="pin-new" type="password" maxlength="4" inputmode="numeric" placeholder="New PIN"
       style="width:130px;text-align:center;letter-spacing:6px;font-size:18px;font-weight:700;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:10px;outline:none;display:block;margin:0 auto 16px">
     <div style="display:flex;gap:8px;justify-content:center">
       <button onclick="closePinModal()" style="background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--text3)">Cancel</button>
@@ -272,9 +274,11 @@ td{padding:8px 10px;vertical-align:top}
   </div>
 
   <div id="content">
+
     <!-- DASHBOARD -->
     <div id="view-dashboard" class="view active">
       <div class="stat-grid" id="stat-grid"></div>
+      <div class="fin-bar" id="fin-bar"></div>
       <div class="charts-row">
         <div class="panel"><div class="panel-title">Portfolio by Player</div><div id="player-bars"></div></div>
         <div class="panel"><div class="panel-title">Top Holdings</div><div id="top-holdings"></div></div>
@@ -288,7 +292,7 @@ td{padding:8px 10px;vertical-align:top}
       <div class="table-wrap"><div class="tbl-scroll">
         <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
       </div></div>
-      <div class="hint">Click description to expand &nbsp;·&nbsp; Click <strong>Cost</strong> or Sale $ to edit &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
+      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Cost or Sale $ to edit &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
     </div>
 
     <!-- MARKET -->
@@ -328,12 +332,11 @@ td{padding:8px 10px;vertical-align:top}
       <div class="form-grid">
         <div class="fg"><label>Player Name *</label><input id="f-player" list="player-list" placeholder="e.g. Kon Knueppel"><datalist id="player-list"></datalist></div>
         <div class="fg"><label>Purchase Date *</label><input id="f-date" type="date"></div>
-        <div class="fg full"><label>Set / Product *</label><input id="f-set" placeholder="e.g. 2025-26 Panini 爱咪咪"></div>
-        <div class="fg full"><label>Card Description *</label><input id="f-card" placeholder="e.g. Rookie Patch Auto #IPA-XX"></div>
+        <div class="fg full"><label>Set / Product *</label><input id="f-set" placeholder="e.g. 2025-26 Panini Immaculate"></div>
+        <div class="fg full"><label>Card Description *</label><input id="f-card" placeholder="e.g. 粉碎冰 Pink Ice #152 RC"></div>
         <div class="fg"><label>Serial Number</label><input id="f-serial" placeholder="e.g. 32/99 or 5/5"></div>
         <div class="fg"><label>Grade</label><input id="f-grade" list="grade-list" placeholder="Raw / PSA 10 / etc.">
-          <datalist id="grade-list"><option value="Raw"><option value="PSA 10"><option value="PSA 9"><option value="PSA 8"><option value="PSA 7"><option value="BGS 9.5"><option value="BGS 9"><option value="SGC 10"><option value="SGC 9.5"><option value="SGC 9"><option value="MNT 9"><option value="Raw (MINT)"></datalist>
-        </div>
+          <datalist id="grade-list"><option value="Raw"><option value="PSA 10"><option value="PSA 9"><option value="PSA 8"><option value="PSA 7"><option value="BGS 9.5"><option value="BGS 9"><option value="SGC 10"><option value="SGC 9.5"><option value="SGC 9"><option value="MNT 9"><option value="Raw (MINT)"></datalist></div>
         <div class="fg"><label>Card Type *</label>
           <select id="f-tag"><option value="rc">RC — Rookie Card</option><option value="auto">Auto — Autograph</option><option value="rpa">RPA — Rookie Patch Auto</option><option value="refractor">Refractor / Parallel</option><option value="insert">Insert / SP</option><option value="ssp">SSP — Super Short Print</option><option value="relic">Relic / Patch / GU</option></select>
         </div>
@@ -341,9 +344,8 @@ td{padding:8px 10px;vertical-align:top}
           <div class="cw"><input id="f-cost" type="number" min="0" step="0.01" placeholder="0.00"><select id="f-currency"><option value="USD">USD</option><option value="CAD">CAD</option><option value="CNY">CNY</option></select></div>
         </div>
         <div class="fg"><label>Platform / Source</label><input id="f-source" list="source-list" placeholder="eBay / Card Hobby / Show">
-          <datalist id="source-list"><option value="eBay"><option value="Card Hobby"><option value="Show"><option value="PWCC"><option value="Goldin"><option value="开盒"></datalist>
-        </div>
-        <div class="fg full"><label>Notes</label><input id="f-notes" placeholder="e.g. Storing in China warehouse / Sending to PSA"></div>
+          <datalist id="source-list"><option value="eBay"><option value="Card Hobby"><option value="Show"><option value="PWCC"><option value="Goldin"><option value="开盒"></datalist></div>
+        <div class="fg full"><label>Notes</label><input id="f-notes" placeholder="e.g. China market target / Sending to PSA"></div>
       </div>
       <div class="form-err" id="form-error"></div>
     </div>
@@ -361,25 +363,19 @@ const TAG_COLORS={auto:"#7c3aed",rpa:"#ff2d78",ssp:"#c68a00",rc:"#00a844",refrac
 const TAG_LABELS={auto:"AUTO",rpa:"RPA",ssp:"SSP",rc:"RC",refractor:"REFR",insert:"INSERT",relic:"RELIC"};
 const DEFAULT_PIN="8888";
 
-// ── PIN ──────────────────────────────────────────────
+// PIN
 let pinEntry="";
 const getPin=()=>localStorage.getItem("cv_pin")||DEFAULT_PIN;
-function pinPress(d){
-  if(pinEntry.length>=4)return;
-  pinEntry+=d;updateDots();
-  if(pinEntry.length===4)setTimeout(checkPin,120);
-}
+function pinPress(d){if(pinEntry.length>=4)return;pinEntry+=d;updateDots();if(pinEntry.length===4)setTimeout(checkPin,120);}
 function pinDel(){if(!pinEntry.length)return;pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById("pin-err").textContent="";}
 function updateDots(){for(let i=0;i<4;i++)document.getElementById("d"+i).classList.toggle("filled",i<pinEntry.length);}
 function checkPin(){
-  if(pinEntry===getPin()){
-    document.getElementById("pin-screen").style.display="none";
-  }else{
+  if(pinEntry===getPin()){document.getElementById("pin-screen").style.display="none";}
+  else{
     document.getElementById("pin-err").textContent="Incorrect PIN — try again";
     pinEntry="";updateDots();
-    const b=document.getElementById("pin-box");
-    b.style.animation="none";
-    requestAnimationFrame(()=>{b.style.animation="shake .35s ease";});
+    const b=document.getElementById("pin-box");b.style.animation="none";
+    requestAnimationFrame(()=>b.style.animation="shake .35s ease");
   }
 }
 function openPinModal(){document.getElementById("pin-modal").classList.add("open");document.getElementById("pin-new").value="";document.getElementById("pin-modal-err").textContent="";}
@@ -387,7 +383,7 @@ function closePinModal(){document.getElementById("pin-modal").classList.remove("
 function saveNewPin(){
   const v=document.getElementById("pin-new").value.trim();
   if(!/^\d{4}$/.test(v)){document.getElementById("pin-modal-err").textContent="PIN must be exactly 4 digits";return;}
-  localStorage.setItem("cv_pin",v);closePinModal();alert("✅ PIN updated successfully!");
+  localStorage.setItem("cv_pin",v);closePinModal();alert("PIN updated!");
 }
 document.addEventListener("keydown",e=>{
   if(document.getElementById("pin-screen").style.display==="none")return;
@@ -395,69 +391,92 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Backspace")pinDel();
 });
 
-// ── DATA ─────────────────────────────────────────────
+// SEED DATA
 const SEED=[
-  {id:51,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
-  {id:52,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:"",salePrice:null,status:"In Collection"},
-  {id:53,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:"",salePrice:null,status:"In Collection"},
-  {id:54,player:"Cade Cunningham",date:"2026-03-30",set:"2023-24 Panini Flawless",card:"Signature Prime Materials Ruby",serial:"15/15",grade:"BGS 8.5 / Auto 10",cost:2399.73,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:55,player:"Brandon Miller",date:"2026-03-29",set:"2023-24 Panini Prizm",card:"Pink Ice #152 RC (2nd)",serial:"",grade:"PSA 10",cost:73.39,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:56,player:"Damian Lillard",date:"2026-03-29",set:"2025-26 Topps Chrome",card:"Orange Geometric #153",serial:"17/25",grade:"Raw",cost:15.77,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:57,player:"Damian Lillard",date:"2026-03-29",set:"2024-25 Panini Select",card:"Premier Level #145 Light Blue Prizm",serial:"/299",grade:"Raw",cost:2.64,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:58,player:"Damian Lillard",date:"2026-03-27",set:"2022-23 Panini Impeccable",card:"Red #34",serial:"15/49",grade:"Raw",cost:11.73,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:1,player:"Kon Knueppel",date:"2026-03-22",set:"2025-26 Topps Chrome",card:"Rookie Auto #NS-KK Green Refractor",serial:"32/99",grade:"Raw",cost:923.38,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:2,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps '80-81 Chrome",card:"#TCKK Rookie RC",serial:"",grade:"Raw",cost:41.37,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:3,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps Chrome '80-81",card:"#TC-KK Silver Rookie RC",serial:"",grade:"Raw",cost:43.83,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:4,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ultra Violet Case Hit SSP #UV-14",serial:"",grade:"Raw",cost:1216.95,tag:"ssp",source:"eBay",notes:"",salePrice:1000,status:"Sold"},
-  {id:5,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Yellow Refractor #254",serial:"/275",grade:"Raw",cost:138.85,tag:"refractor",source:"eBay",notes:"",salePrice:230,status:"Sold"},
-  {id:6,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Rookie Auto #TAUR2-KK Green",serial:"58/99",grade:"PSA 8 / Auto 10",cost:677.86,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:7,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ripper Relics Game Worn RC",serial:"",grade:"Raw",cost:59.27,tag:"relic",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:8,player:"Kon Knueppel",date:"2026-02-23",set:"2025-26 Topps Chrome",card:"Rookie Prism Refractor",serial:"",grade:"Raw",cost:57.65,tag:"refractor",source:"eBay",notes:"",salePrice:60,status:"Sold"},
-  {id:9,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Midnight",card:"Daydreamers #DD18 RC",serial:"",grade:"Raw",cost:103.28,tag:"insert",source:"eBay",notes:"",salePrice:100,status:"Sold"},
-  {id:10,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Chrome",card:"On Card Auto All-Time Rookie 3PT Leader",serial:"",grade:"Raw",cost:459.44,tag:"auto",source:"eBay",notes:"",salePrice:645.61,status:"Sold"},
-  {id:11,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Midnight",card:"Horizon Signatures RC Auto",serial:"",grade:"Raw",cost:384.37,tag:"auto",source:"eBay",notes:"",salePrice:560,status:"Sold"},
-  {id:12,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Chrome",card:"Radiating Rookies RC",serial:"",grade:"Raw",cost:411.06,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:13,player:"Kon Knueppel",date:"2026-02-13",set:"2025-26 Topps Chrome",card:"Radiating Rookies Case Hit SSP RR-4",serial:"",grade:"Raw",cost:539.40,tag:"ssp",source:"eBay",notes:"",salePrice:840,status:"Sold"},
-  {id:14,player:"Kon Knueppel",date:"2026-02-04",set:"2025-26 Topps Midnight",card:"Horizon Auto RC",serial:"",grade:"Raw",cost:426.99,tag:"auto",source:"eBay",notes:"",salePrice:637,status:"Sold"},
-  {id:15,player:"Kon Knueppel",date:"2026-01-25",set:"2025-26 Topps Chrome",card:"Fanatical Insert SSP #FAN-24 RC",serial:"",grade:"Raw",cost:68.28,tag:"ssp",source:"eBay",notes:"",salePrice:110,status:"Sold"},
-  {id:16,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Green Geometric Instinct #INS-14 RC",serial:"/99",grade:"Raw",cost:85.39,tag:"insert",source:"eBay",notes:"",salePrice:110,status:"Sold"},
-  {id:17,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps",card:"No Limit #NL-4 RC",serial:"/250",grade:"Raw",cost:34.76,tag:"insert",source:"eBay",notes:"",salePrice:55,status:"Sold"},
-  {id:18,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Ball Of Duty Raywave Refractor #23 RC",serial:"",grade:"Raw",cost:17.61,tag:"refractor",source:"eBay",notes:"",salePrice:30,status:"Sold"},
-  {id:19,player:"Kon Knueppel",date:"2026-01-23",set:"2025-26 Topps Chrome",card:"Stratospheric Rookie Auto RC SMR-KK",serial:"",grade:"Raw",cost:276.22,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:20,player:"Kon Knueppel",date:"2026-01-22",set:"2025-26 Topps",card:"New Applicant Auto #NA-KK RC",serial:"",grade:"Raw",cost:211.93,tag:"auto",source:"eBay",notes:"",salePrice:342.05,status:"Sold"},
-  {id:21,player:"Damian Lillard",date:"2026-03-21",set:"2012-13 Panini Brilliance",card:"Auto RC",serial:"",grade:"MNT 9 / Auto 10",cost:176.01,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:22,player:"Damian Lillard",date:"2026-03-17",set:"2024 Panini Prizm Black",card:"#91 Auto Blue Shimmer FOTL",serial:"15/25",grade:"PSA 10",cost:366.69,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:23,player:"Damian Lillard",date:"2026-03-17",set:"2023 Panini 爱咪咪",card:"Gold Heralded Auto",serial:"/10",grade:"PSA 7 / DNA 10",cost:219.50,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:24,player:"Damian Lillard",date:"2026-03-13",set:"2025-26 Topps Chrome",card:"#153 Teal Refractor",serial:"/199",grade:"Raw",cost:6.75,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:25,player:"Damian Lillard",date:"2026-03-09",set:"2022-23 Panini Prizm",card:"Dominance #16",serial:"",grade:"Raw",cost:1.60,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:26,player:"Damian Lillard",date:"2026-03-09",set:"2023-24 Panini Recon",card:"#143 Holo Blue",serial:"/99",grade:"Raw",cost:4.88,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:27,player:"Damian Lillard",date:"2026-03-05",set:"2019-20 Panini 爱咪咪",card:"Premium Gold Patch Auto",serial:"5/5",grade:"SGC 9.5 / Auto 10",cost:740.50,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:28,player:"Damian Lillard",date:"2026-03-05",set:"2018-19 Panini Select",card:"In Flight Signatures On Card",serial:"/35",grade:"PSA 10",cost:347.49,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:29,player:"Brandon Miller",date:"2026-03-07",set:"2023-24 Panini Prizm",card:"Pink Ice RC",serial:"",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:30,player:"Brandon Miller",date:"2026-03-06",set:"2023 Panini 马赛克",card:"City Edition #277 Reactive Blue RC",serial:"",grade:"PSA 10",cost:38.63,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:31,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Prizm",card:"Rookie Silver Prizm RC",serial:"",grade:"PSA 10",cost:247.65,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:32,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Court Kings",card:"Self Expression Ruby #5",serial:"/149",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:33,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Red Choice RC",serial:"/88",grade:"PSA 10",cost:406.72,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:34,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Court Kings",card:"#113 Base RC",serial:"",grade:"PSA 10",cost:33.08,tag:"rc",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:35,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Orange Ice #152 RC",serial:"",grade:"PSA 10",cost:70.21,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:36,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"Silver #152 RC",serial:"",grade:"PSA 10",cost:239.80,tag:"rc",source:"eBay",notes:"C$333.06 converted",salePrice:null,status:"In Collection"},
-  {id:37,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"Green RC #152",serial:"",grade:"PSA 10",cost:53.93,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:38,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"Green RC #152 (2nd)",serial:"",grade:"PSA 10",cost:65.65,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:39,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini 马赛克",card:"Jam Masters #1 Green Mosaic RC",serial:"",grade:"PSA 10",cost:16.54,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:40,player:"Anthony Edwards",date:"2026-03-08",set:"2024-25 Panini 手提",card:"Flawless Flyers On Card Auto",serial:"6/25",grade:"Raw",cost:1459.27,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:41,player:"Anthony Edwards",date:"2026-03-05",set:"2023-24 Panini 爱咪咪",card:"#IPA-ANT Patch Auto",serial:"/20",grade:"Raw",cost:1590.56,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:42,player:"LaMelo Ball",date:"2026-03-17",set:"2025-26 Topps Chrome",card:"Patented SSP Insert Case Hit #PD-11",serial:"",grade:"Raw",cost:52.31,tag:"ssp",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:43,player:"LaMelo Ball",date:"2026-03-03",set:"2025-26 Topps Chrome",card:"Glass Canvas Case Hit & Activators",serial:"/399",grade:"Raw",cost:111.02,tag:"insert",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:44,player:"Stephen Curry",date:"2026-03-21",set:"2023-24 Panini National Archives Ink",card:"Auto",serial:"7/25",grade:"Raw",cost:1384.49,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:45,player:"Cade Cunningham",date:"2026-03-07",set:"2024-25 Panini One And One",card:"Day One Auto Green #DOS-CAD",serial:"5/5",grade:"Raw",cost:578.57,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:46,player:"Grant Williams",date:"2026-03-24",set:"2019-20 Panini 爱咪咪",card:"RPA Rookie Patch Auto",serial:"",grade:"Raw (MINT)",cost:58.70,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:47,player:"Shai Gilgeous-Alexander",date:"2026-03-15",set:"2025-26 Topps Finest",card:"Geometric Purple Refractor",serial:"36/100",grade:"Raw",cost:32.55,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
-  {id:48,player:"Yongxi 'Jacky' Cui",date:"2026-03-07",set:"2024-25 Panini 爱咪咪",card:"Premium Patch Auto",serial:"/50",grade:"Raw",cost:59.27,tag:"rpa",source:"eBay",notes:"China market target",salePrice:null,status:"In Collection"},
-  {id:49,player:"Yang Hansen",date:"2026-02-17",set:"2025-26 Topps Midnight",card:"Midnight Sun Signatures RC Auto",serial:"",grade:"Raw",cost:42.70,tag:"auto",source:"eBay",notes:"China market target",salePrice:null,status:"In Collection"},
-  {id:50,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:"",salePrice:null,status:"In Collection"},
+  // Cooper Flagg
+  {id:1,player:"Cooper Flagg",date:"2025-10-30",set:"2025-26 Topps Chrome",card:"银折 Silver Refractor RC",serial:"",grade:"Raw",cost:0,tag:"rc",source:"开盒",notes:"Box pull",salePrice:160,status:"Sold"},
+  // Kon Knueppel
+  {id:2,player:"Kon Knueppel",date:"2026-03-22",set:"2025-26 Topps Chrome",card:"Rookie Auto #NS-KK Green Refractor",serial:"32/99",grade:"Raw",cost:923.38,tag:"auto",source:"eBay",notes:""},
+  {id:3,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps '80-81 Chrome",card:"#TCKK Rookie RC",serial:"",grade:"Raw",cost:41.37,tag:"rc",source:"eBay",notes:""},
+  {id:4,player:"Kon Knueppel",date:"2026-03-17",set:"2025-26 Topps Chrome '80-81",card:"#TC-KK Silver Rookie RC",serial:"",grade:"Raw",cost:43.83,tag:"rc",source:"eBay",notes:""},
+  {id:5,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ultra Violet Case Hit SSP #UV-14",serial:"",grade:"Raw",cost:1216.95,tag:"ssp",source:"eBay",notes:"",salePrice:1000,status:"Sold"},
+  {id:6,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Yellow Refractor #254",serial:"/275",grade:"Raw",cost:138.85,tag:"refractor",source:"eBay",notes:"",salePrice:230,status:"Sold"},
+  {id:7,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Rookie Auto #TAUR2-KK Green",serial:"58/99",grade:"PSA 8 / Auto 10",cost:677.86,tag:"auto",source:"eBay",notes:""},
+  {id:8,player:"Kon Knueppel",date:"2026-02-24",set:"2025-26 Topps Chrome",card:"Ripper Relics Game Worn RC",serial:"",grade:"Raw",cost:59.27,tag:"relic",source:"eBay",notes:""},
+  {id:9,player:"Kon Knueppel",date:"2026-02-23",set:"2025-26 Topps Chrome",card:"Rookie Prism Refractor",serial:"",grade:"Raw",cost:57.65,tag:"refractor",source:"eBay",notes:"",salePrice:60,status:"Sold"},
+  {id:10,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Midnight",card:"Daydreamers #DD18 RC",serial:"",grade:"Raw",cost:103.28,tag:"insert",source:"eBay",notes:"",salePrice:100,status:"Sold"},
+  {id:11,player:"Kon Knueppel",date:"2026-02-19",set:"2025-26 Topps Chrome",card:"On Card Auto All-Time Rookie 3PT Leader",serial:"",grade:"Raw",cost:459.44,tag:"auto",source:"eBay",notes:"",salePrice:645.61,status:"Sold"},
+  {id:12,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Midnight",card:"Horizon Signatures RC Auto",serial:"",grade:"Raw",cost:384.37,tag:"auto",source:"eBay",notes:"",salePrice:560,status:"Sold"},
+  {id:13,player:"Kon Knueppel",date:"2026-02-15",set:"2025-26 Topps Chrome",card:"Radiating Rookies RC",serial:"",grade:"Raw",cost:411.06,tag:"insert",source:"eBay",notes:""},
+  {id:14,player:"Kon Knueppel",date:"2026-02-13",set:"2025-26 Topps Chrome",card:"Radiating Rookies Case Hit SSP RR-4",serial:"",grade:"Raw",cost:539.40,tag:"ssp",source:"eBay",notes:"",salePrice:840,status:"Sold"},
+  {id:15,player:"Kon Knueppel",date:"2026-02-04",set:"2025-26 Topps Midnight",card:"Horizon Auto RC",serial:"",grade:"Raw",cost:426.99,tag:"auto",source:"eBay",notes:"",salePrice:637,status:"Sold"},
+  {id:16,player:"Kon Knueppel",date:"2026-01-25",set:"2025-26 Topps Chrome",card:"Fanatical Insert SSP #FAN-24 RC",serial:"",grade:"Raw",cost:68.28,tag:"ssp",source:"eBay",notes:"",salePrice:110,status:"Sold"},
+  {id:17,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Green Geometric Instinct #INS-14 RC",serial:"/99",grade:"Raw",cost:85.39,tag:"insert",source:"eBay",notes:"",salePrice:110,status:"Sold"},
+  {id:18,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps",card:"No Limit #NL-4 RC",serial:"/250",grade:"Raw",cost:34.76,tag:"insert",source:"eBay",notes:"",salePrice:55,status:"Sold"},
+  {id:19,player:"Kon Knueppel",date:"2026-01-24",set:"2025-26 Topps Chrome",card:"Ball Of Duty Raywave Refractor #23 RC",serial:"",grade:"Raw",cost:17.61,tag:"refractor",source:"eBay",notes:"",salePrice:30,status:"Sold"},
+  {id:20,player:"Kon Knueppel",date:"2026-01-23",set:"2025-26 Topps Chrome",card:"Stratospheric Rookie Auto RC SMR-KK",serial:"",grade:"Raw",cost:276.22,tag:"auto",source:"eBay",notes:""},
+  {id:21,player:"Kon Knueppel",date:"2026-01-22",set:"2025-26 Topps",card:"New Applicant Auto #NA-KK RC",serial:"",grade:"Raw",cost:211.93,tag:"auto",source:"eBay",notes:"",salePrice:342.05,status:"Sold"},
+  // Damian Lillard
+  {id:22,player:"Damian Lillard",date:"2026-04-06",set:"2023-24 Panini Impeccable",card:"Stainless Stars",serial:"/75",grade:"Raw",cost:21.42,tag:"insert",source:"eBay",notes:""},
+  {id:23,player:"Damian Lillard",date:"2026-04-05",set:"2023-24 Panini Phoenix",card:"Fire Forged Orange #7",serial:"/49",grade:"Raw",cost:8.35,tag:"refractor",source:"eBay",notes:""},
+  {id:24,player:"Damian Lillard",date:"2026-03-29",set:"2025-26 Topps Chrome",card:"Orange Geometric #153",serial:"17/25",grade:"Raw",cost:15.77,tag:"refractor",source:"eBay",notes:""},
+  {id:25,player:"Damian Lillard",date:"2026-03-29",set:"2024-25 Panini Select",card:"Premier Level #145 Light Blue Prizm",serial:"/299",grade:"Raw",cost:2.64,tag:"refractor",source:"eBay",notes:""},
+  {id:26,player:"Damian Lillard",date:"2026-03-27",set:"2022-23 Panini Impeccable",card:"Red #34",serial:"15/49",grade:"Raw",cost:11.73,tag:"refractor",source:"eBay",notes:""},
+  {id:27,player:"Damian Lillard",date:"2026-03-21",set:"2012-13 Panini Brilliance",card:"Auto RC",serial:"",grade:"MNT 9 / Auto 10",cost:176.01,tag:"auto",source:"eBay",notes:""},
+  {id:28,player:"Damian Lillard",date:"2026-03-17",set:"2024 Panini Prizm Black",card:"#91 Auto Blue Shimmer FOTL",serial:"15/25",grade:"PSA 10",cost:366.69,tag:"auto",source:"eBay",notes:""},
+  {id:29,player:"Damian Lillard",date:"2026-03-17",set:"2023 Panini Immaculate",card:"Gold Heralded Auto",serial:"/10",grade:"PSA 7 / DNA 10",cost:219.50,tag:"auto",source:"eBay",notes:""},
+  {id:30,player:"Damian Lillard",date:"2026-03-13",set:"2025-26 Topps Chrome",card:"#153 Teal Refractor",serial:"/199",grade:"Raw",cost:6.75,tag:"refractor",source:"eBay",notes:""},
+  {id:31,player:"Damian Lillard",date:"2026-03-09",set:"2022-23 Panini Prizm",card:"Dominance #16",serial:"",grade:"Raw",cost:1.60,tag:"insert",source:"eBay",notes:""},
+  {id:32,player:"Damian Lillard",date:"2026-03-09",set:"2023-24 Panini Recon",card:"#143 Holo Blue",serial:"/99",grade:"Raw",cost:4.88,tag:"refractor",source:"eBay",notes:""},
+  {id:33,player:"Damian Lillard",date:"2026-03-05",set:"2019-20 Panini Immaculate",card:"Premium Gold Patch Auto",serial:"5/5",grade:"SGC 9.5 / Auto 10",cost:740.50,tag:"rpa",source:"eBay",notes:""},
+  {id:34,player:"Damian Lillard",date:"2026-03-05",set:"2018-19 Panini Select",card:"In Flight Signatures On Card",serial:"/35",grade:"PSA 10",cost:347.49,tag:"auto",source:"eBay",notes:""},
+  // Brandon Miller — bilingual standardized
+  {id:35,player:"Brandon Miller",date:"2026-04-06",set:"2023-24 Panini Contenders Optic",card:"VIPS 红碎冰 Red Cracked Ice #10 RC",serial:"/175",grade:"Raw",cost:22.94,tag:"refractor",source:"eBay",notes:""},
+  {id:36,player:"Brandon Miller",date:"2026-04-03",set:"2023-24 Panini Prizm",card:"粉碎冰 Pink Ice #152 RC (4th)",serial:"",grade:"PSA 10",cost:70.07,tag:"refractor",source:"eBay",notes:""},
+  {id:37,player:"Brandon Miller",date:"2026-04-03",set:"2023-24 Panini Prizm",card:"橙碎冰 Orange Ice #152 RC (3rd)",serial:"",grade:"PSA 10",cost:72.08,tag:"refractor",source:"eBay",notes:""},
+  {id:38,player:"Brandon Miller",date:"2026-03-30",set:"2023 Panini Prizm",card:"红白蓝 Red White & Blue #152 RC",serial:"",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:""},
+  {id:39,player:"Brandon Miller",date:"2026-03-30",set:"2023-24 Panini Prizm",card:"粉碎冰 Pink Ice #152 RC (3rd)",serial:"",grade:"PSA 10",cost:74.56,tag:"refractor",source:"eBay",notes:""},
+  {id:40,player:"Brandon Miller",date:"2026-03-30",set:"2023-24 Panini Prizm",card:"红碎冰 Red Ice #152 RC",serial:"",grade:"PSA 10",cost:80.06,tag:"refractor",source:"eBay",notes:""},
+  {id:41,player:"Brandon Miller",date:"2026-03-30",set:"2023-24 Panini Prizm",card:"橙碎冰 Orange Ice #152 RC (2nd)",serial:"",grade:"PSA 10",cost:87.01,tag:"refractor",source:"eBay",notes:""},
+  {id:42,player:"Brandon Miller",date:"2026-03-29",set:"2023-24 Panini Prizm",card:"粉碎冰 Pink Ice #152 RC (2nd)",serial:"",grade:"PSA 10",cost:73.39,tag:"refractor",source:"eBay",notes:""},
+  {id:43,player:"Brandon Miller",date:"2026-03-07",set:"2023-24 Panini Prizm",card:"粉碎冰 Pink Ice #152 RC",serial:"",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:""},
+  {id:44,player:"Brandon Miller",date:"2026-03-06",set:"2023 Panini Mosaic",card:"马赛克 蓝 City Edition Reactive Blue #277 RC",serial:"",grade:"PSA 10",cost:38.63,tag:"rc",source:"eBay",notes:""},
+  {id:45,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Prizm",card:"银折 Silver Prizm #152 RC",serial:"",grade:"PSA 10",cost:247.65,tag:"rc",source:"eBay",notes:""},
+  {id:46,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Court Kings",card:"Court Kings Self Expression Ruby #5",serial:"/149",grade:"PSA 10",cost:58.71,tag:"refractor",source:"eBay",notes:""},
+  {id:47,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"红选 Red Choice #152 RC",serial:"/88",grade:"PSA 10",cost:406.72,tag:"refractor",source:"eBay",notes:"Low POP — hold"},
+  {id:48,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Court Kings",card:"Court Kings Base #113 RC",serial:"",grade:"PSA 10",cost:33.08,tag:"rc",source:"eBay",notes:""},
+  {id:49,player:"Brandon Miller",date:"2026-03-04",set:"2023-24 Panini Prizm",card:"橙碎冰 Orange Ice #152 RC",serial:"",grade:"PSA 10",cost:70.21,tag:"refractor",source:"eBay",notes:""},
+  {id:50,player:"Brandon Miller",date:"2026-03-04",set:"2023 Panini Prizm",card:"银折 Silver Prizm #152 RC (2nd)",serial:"",grade:"PSA 10",cost:239.80,tag:"rc",source:"eBay",notes:"C$333.06 converted"},
+  {id:51,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"绿折 Green Prizm #152 RC",serial:"",grade:"PSA 10",cost:53.93,tag:"refractor",source:"eBay",notes:""},
+  {id:52,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Prizm",card:"绿折 Green Prizm #152 RC (2nd)",serial:"",grade:"PSA 10",cost:65.65,tag:"refractor",source:"eBay",notes:""},
+  {id:53,player:"Brandon Miller",date:"2026-03-03",set:"2023-24 Panini Mosaic",card:"马赛克 绿 Jam Masters Green #1 RC",serial:"",grade:"PSA 10",cost:16.54,tag:"insert",source:"eBay",notes:""},
+  // Anthony Edwards
+  {id:54,player:"Anthony Edwards",date:"2026-03-08",set:"2024-25 Panini Flawless",card:"Flawless Flyers On Card Auto",serial:"6/25",grade:"Raw",cost:1459.27,tag:"auto",source:"eBay",notes:""},
+  {id:55,player:"Anthony Edwards",date:"2026-03-05",set:"2023-24 Panini Immaculate",card:"#IPA-ANT Patch Auto",serial:"/20",grade:"Raw",cost:1590.56,tag:"rpa",source:"eBay",notes:""},
+  // LaMelo Ball
+  {id:56,player:"LaMelo Ball",date:"2026-04-05",set:"2018 Leaf",card:"Premier Rookie PR-48 Pink",serial:"10/10",grade:"Raw",cost:48.22,tag:"rc",source:"eBay",notes:"Near 1/1"},
+  {id:57,player:"LaMelo Ball",date:"2026-03-26",set:"2020 Panini Select",card:"Gold Wave Prizm",serial:"",grade:"PSA 10",cost:300,tag:"rc",source:"Show",notes:""},
+  {id:58,player:"LaMelo Ball",date:"2026-03-20",set:"2020 Contenders",card:"球票签字 Ticket Auto",serial:"",grade:"PSA 10",cost:375,tag:"auto",source:"Show",notes:""},
+  {id:59,player:"LaMelo Ball",date:"2026-03-17",set:"2025-26 Topps Chrome",card:"Patented SSP Insert Case Hit #PD-11",serial:"",grade:"Raw",cost:52.31,tag:"ssp",source:"eBay",notes:""},
+  {id:60,player:"LaMelo Ball",date:"2026-03-03",set:"2025-26 Topps Chrome",card:"Glass Canvas Case Hit & Activators",serial:"/399",grade:"Raw",cost:111.02,tag:"insert",source:"eBay",notes:""},
+  // Stephen Curry
+  {id:61,player:"Stephen Curry",date:"2026-03-21",set:"2023-24 Panini National Archives Ink",card:"Auto",serial:"7/25",grade:"Raw",cost:1384.49,tag:"auto",source:"eBay",notes:""},
+  // Cade Cunningham
+  {id:62,player:"Cade Cunningham",date:"2026-03-30",set:"2023-24 Panini Flawless",card:"Signature Prime Materials Ruby",serial:"15/15",grade:"BGS 8.5 / Auto 10",cost:2399.73,tag:"rpa",source:"eBay",notes:""},
+  {id:63,player:"Cade Cunningham",date:"2026-03-07",set:"2024-25 Panini One And One",card:"Day One Auto Green #DOS-CAD",serial:"5/5",grade:"Raw",cost:578.57,tag:"auto",source:"eBay",notes:""},
+  // Grant Williams
+  {id:64,player:"Grant Williams",date:"2026-03-24",set:"2019-20 Panini Immaculate",card:"RPA Rookie Patch Auto",serial:"",grade:"Raw (MINT)",cost:58.70,tag:"rpa",source:"eBay",notes:""},
+  // SGA
+  {id:65,player:"Shai Gilgeous-Alexander",date:"2026-03-15",set:"2025-26 Topps Finest",card:"Geometric Purple Refractor",serial:"36/100",grade:"Raw",cost:32.55,tag:"refractor",source:"eBay",notes:""},
+  // Jacky Cui
+  {id:66,player:"Yongxi 'Jacky' Cui",date:"2026-03-07",set:"2024-25 Panini Immaculate",card:"Premium Patch Auto",serial:"/50",grade:"Raw",cost:59.27,tag:"rpa",source:"eBay",notes:"China market target"},
+  // Yang Hansen
+  {id:67,player:"Yang Hansen",date:"2026-02-17",set:"2025-26 Topps Midnight",card:"Midnight Sun Signatures RC Auto",serial:"",grade:"Raw",cost:42.70,tag:"auto",source:"eBay",notes:"China market target"},
+  // Manu Ginobili
+  {id:68,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:""},
 ];
 
-let cards=[],nextId=62,sortCol="date",sortDir="desc",playerFilter="All",editingId=null,editingCostId=null;
+let cards=[],nextId=69,sortCol="date",sortDir="desc",playerFilter="All",editingId=null,editingCostId=null;
 const expanded=new Set();
 let apiKey=localStorage.getItem("cv_key")||"";
 
@@ -471,19 +490,23 @@ const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>
 
 function save(){try{localStorage.setItem("cv_cards",JSON.stringify(cards));localStorage.setItem("cv_nid",nextId);}catch(e){}}
 function load(){
-  try{const s=localStorage.getItem("cv_cards");if(s){cards=JSON.parse(s);nextId=+(localStorage.getItem("cv_nid")||54);return;}}catch(e){}
-  cards=SEED.map(c=>({salePrice:null,status:"In Collection",market:null,...c}));nextId=54;
+  try{const s=localStorage.getItem("cv_cards");if(s){cards=JSON.parse(s);nextId=+(localStorage.getItem("cv_nid")||69);return;}}catch(e){}
+  cards=SEED.map(c=>({salePrice:null,status:"In Collection",market:null,...c}));nextId=69;
 }
+
 function calcStats(){
   const inCol=cards.filter(c=>c.status==="In Collection");
   const sold=cards.filter(c=>c.status==="Sold"&&c.salePrice!=null);
-  const tc=cards.reduce((s,c)=>s+c.cost,0);
-  const rev=sold.reduce((s,c)=>s+c.salePrice,0);
-  const sc=sold.reduce((s,c)=>s+c.cost,0);
-  return{tc,inColCost:inCol.reduce((s,c)=>s+c.cost,0),rev,pnl:rev-sc,count:cards.length,inCol:inCol.length,soldCount:sold.length};
+  const totalCost=cards.reduce((s,c)=>s+c.cost,0);
+  const inColCost=inCol.reduce((s,c)=>s+c.cost,0);
+  const soldCost=sold.reduce((s,c)=>s+c.cost,0);
+  const revenue=sold.reduce((s,c)=>s+(c.salePrice||0),0);
+  const profit=revenue-soldCost;
+  const roi=soldCost>0?((profit/soldCost)*100):0;
+  return{totalCost,inColCost,soldCost,revenue,profit,roi,count:cards.length,inColCount:inCol.length,soldCount:sold.length};
 }
 
-// ── INIT ─────────────────────────────────────────────
+// INIT
 document.getElementById("today-date").textContent=new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
 document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
 load();buildAvatars();
@@ -494,10 +517,10 @@ function buildAvatars(){
   const wrap=document.getElementById("player-avatars");wrap.innerHTML="";
   getPlayers().slice(0,12).forEach(p=>{
     const d=document.createElement("div");d.className="av";d.title=p;d.textContent=initials(p);
-    d.style.cssText=`background:${pColor(p)}22;border-color:${pColor(p)};color:${pColor(p)}`;
+    d.style.cssText="background:"+pColor(p)+"22;border-color:"+pColor(p)+";color:"+pColor(p);
     wrap.appendChild(d);
   });
-  document.getElementById("player-list").innerHTML=getPlayers().map(p=>`<option value="${esc(p)}">`).join("");
+  document.getElementById("player-list").innerHTML=getPlayers().map(p=>"<option value='"+esc(p)+"'>").join("");
 }
 
 function showView(id,btn){
@@ -511,32 +534,78 @@ function showView(id,btn){
   else if(id==="market")renderMarket();
 }
 
-// ── DASHBOARD ────────────────────────────────────────
 function renderDashboard(){
   const s=calcStats();
+
+  // Stat cards row
   document.getElementById("stat-grid").innerHTML=[
     {l:"Total Cards",v:s.count,c:"var(--pink)",bt:"var(--pink)"},
-    {l:"Cost Basis",v:fmtS(s.tc),c:"var(--purple)",bt:"var(--purple)"},
-    {l:"In Collection",v:s.inCol+" cards",c:"var(--cyan)",bt:"var(--cyan)"},
-    {l:"Sold",v:s.soldCount+" cards",c:"var(--green)",bt:"var(--green)"},
-    {l:"Realized P&L",v:fmtS(s.pnl),c:s.pnl>=0?"var(--green)":"var(--red)",bt:s.pnl>=0?"var(--green)":"var(--red)"},
-  ].map(d=>`<div class="stat-card" style="border-top-color:${d.bt}"><div class="stat-label">${d.l}</div><div class="stat-val" style="color:${d.c}">${d.v}</div></div>`).join("");
+    {l:"Total Expense",v:fmtS(s.totalCost),c:"var(--purple)",bt:"var(--purple)"},
+    {l:"In Collection",v:s.inColCount+" cards",c:"var(--cyan)",bt:"var(--cyan)"},
+    {l:"Cards Sold",v:s.soldCount,c:"var(--green)",bt:"var(--green)"},
+    {l:"Realized P&L",v:(s.profit>=0?"+":"")+fmtS(s.profit),c:s.profit>=0?"var(--green)":"var(--red)",bt:s.profit>=0?"var(--green)":"var(--red)"},
+  ].map(d=>"<div class='stat-card' style='border-top-color:"+d.bt+"'><div class='stat-label'>"+d.l+"</div><div class='stat-val' style='color:"+d.c+"'>"+d.v+"</div></div>").join("");
 
+  // Financial summary bar
+  const roiStr=(s.roi>=0?"+":"")+s.roi.toFixed(1)+"%";
+  const profitColor=s.profit>=0?"var(--green)":"var(--red)";
+  const profitBg=s.profit>=0?"#f0fff6":"#fff5f5";
+  document.getElementById("fin-bar").innerHTML=
+    "<div class='fin-cell'>"+
+      "<div class='fin-lbl'>💸 Total Expense</div>"+
+      "<div class='fin-val' style='color:var(--purple)'>"+fmtS(s.totalCost)+"</div>"+
+      "<div class='fin-sub'>All-time · "+s.count+" cards bought</div>"+
+    "</div>"+
+    "<div class='fin-cell'>"+
+      "<div class='fin-lbl'>📦 In Stock Value</div>"+
+      "<div class='fin-val' style='color:var(--cyan)'>"+fmtS(s.inColCost)+"</div>"+
+      "<div class='fin-sub'>Cost basis · "+s.inColCount+" cards held</div>"+
+    "</div>"+
+    "<div class='fin-cell'>"+
+      "<div class='fin-lbl'>🏷️ Total Revenue</div>"+
+      "<div class='fin-val' style='color:var(--green)'>"+fmtS(s.revenue)+"</div>"+
+      "<div class='fin-sub'>From "+s.soldCount+" sold · spent "+fmtS(s.soldCost)+"</div>"+
+    "</div>"+
+    "<div class='fin-cell' style='background:"+profitBg+"'>"+
+      "<div class='fin-lbl'>📈 Realized Profit</div>"+
+      "<div class='fin-val' style='color:"+profitColor+"'>"+(s.profit>=0?"+":"")+fmtS(s.profit)+"</div>"+
+      "<div class='fin-sub'>ROI on sold: <strong style='color:"+profitColor+"'>"+roiStr+"</strong></div>"+
+    "</div>";
+
+  // Player bars
   const bp=getPlayers().map(p=>{const pc=cards.filter(c=>c.player===p);return{p,cost:pc.reduce((s,c)=>s+c.cost,0),col:pColor(p)};}).sort((a,b)=>b.cost-a.cost);
-  const mx=bp[0]?.cost||1;
-  document.getElementById("player-bars").innerHTML=bp.map(x=>`<div class="bar-row"><div class="bar-meta"><span class="bar-name"><span class="dot" style="background:${x.col}"></span><span>${esc(x.p)}</span></span><span style="font-weight:700;color:${x.col}">${fmtS(x.cost)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${(x.cost/mx*100).toFixed(1)}%;background:${x.col}"></div></div></div>`).join("");
+  const mx=bp[0]?bp[0].cost:1;
+  document.getElementById("player-bars").innerHTML=bp.map(x=>
+    "<div class='bar-row'>"+
+    "<div class='bar-meta'><span class='bar-name'><span class='dot' style='background:"+x.col+"'></span><span>"+esc(x.p)+"</span></span>"+
+    "<span style='font-weight:700;color:"+x.col+"'>"+fmtS(x.cost)+"</span></div>"+
+    "<div class='bar-track'><div class='bar-fill' style='width:"+((x.cost/mx)*100).toFixed(1)+"%;background:"+x.col+"'></div></div>"+
+    "</div>"
+  ).join("");
 
-  document.getElementById("top-holdings").innerHTML=cards.filter(c=>c.status==="In Collection").sort((a,b)=>b.cost-a.cost).slice(0,8).map(c=>`<div class="hold-row"><div><div style="font-size:12px;font-weight:700;color:var(--text)">${esc(c.player)}</div><div style="font-size:11px;color:var(--text3);margin-top:1px">${esc(c.card.length>42?c.card.slice(0,42)+"…":c.card)}</div></div><div style="text-align:right;flex-shrink:0;margin-left:8px"><div style="font-size:12px;font-weight:800;color:var(--pink)">${fmt(c.cost)}</div>${c.serial?`<div style="font-size:10px;font-weight:700;color:var(--yellow)">${esc(c.serial)}</div>`:""}</div></div>`).join("");
+  // Top holdings
+  document.getElementById("top-holdings").innerHTML=cards.filter(c=>c.status==="In Collection").sort((a,b)=>b.cost-a.cost).slice(0,8).map(c=>
+    "<div class='hold-row'>"+
+    "<div><div style='font-size:12px;font-weight:700;color:var(--text)'>"+esc(c.player)+"</div>"+
+    "<div style='font-size:11px;color:var(--text3);margin-top:1px'>"+esc(c.card.length>42?c.card.slice(0,42)+"…":c.card)+"</div></div>"+
+    "<div style='text-align:right;flex-shrink:0;margin-left:8px'>"+
+    "<div style='font-size:12px;font-weight:800;color:var(--pink)'>"+fmt(c.cost)+"</div>"+
+    (c.serial?"<div style='font-size:10px;font-weight:700;color:var(--yellow)'>"+esc(c.serial)+"</div>":"")+
+    "</div></div>"
+  ).join("");
 
-  document.getElementById("tag-breakdown").innerHTML=Object.entries(TAG_COLORS).map(([tag,col])=>{const n=cards.filter(c=>c.tag===tag).length;return n?`<div class="tag-chip" style="background:${col}18;border-color:${col}"><div class="tag-count" style="color:${col}">${n}</div><div class="tag-lbl" style="color:${col}">${tag}</div></div>`:"";}).join("");
+  // Tag breakdown
+  document.getElementById("tag-breakdown").innerHTML=Object.entries(TAG_COLORS).map(([tag,col])=>{
+    const n=cards.filter(c=>c.tag===tag).length;
+    return n?"<div class='tag-chip' style='background:"+col+"18;border-color:"+col+"'><div class='tag-count' style='color:"+col+"'>"+n+"</div><div class='tag-lbl' style='color:"+col+"'>"+tag+"</div></div>":"";
+  }).join("");
 }
 
-// ── PORTFOLIO ────────────────────────────────────────
 function renderPortfolio(){
   const search=document.getElementById("search-input").value.toLowerCase();
-  document.getElementById("player-filters").innerHTML=[{l:`All (${cards.length})`,v:"All",c:null},...getPlayers().map(p=>({l:p,v:p,c:pColor(p)}))].map(f=>{
+  document.getElementById("player-filters").innerHTML=[{l:"All ("+cards.length+")",v:"All",c:null},...getPlayers().map(p=>({l:p,v:p,c:pColor(p)}))].map(f=>{
     const a=playerFilter===f.v;
-    return`<button class="f-btn" style="background:${a?(f.c||"var(--pink)"):"#fff"};color:${a?"#fff":(f.c||"var(--text3)")};border-color:${a?(f.c||"var(--pink)"):"var(--border)"}" onclick="setFilter('${esc(f.v)}')">${esc(f.l)}</button>`;
+    return "<button class='f-btn' style='background:"+(a?(f.c||"var(--pink)"):"#fff")+";color:"+(a?"#fff":(f.c||"var(--text3)"))+";border-color:"+(a?(f.c||"var(--pink)"):"var(--border)")+"' onclick=\"setFilter('"+esc(f.v)+"')\">"+esc(f.l)+"</button>";
   }).join("");
 
   let data=[...cards].filter(c=>{
@@ -544,36 +613,65 @@ function renderPortfolio(){
     if(search&&![c.player,c.card,c.set,c.grade,c.notes||"",c.source||""].join(" ").toLowerCase().includes(search))return false;
     return true;
   }).sort((a,b)=>{
-    let va=a[sortCol]??null,vb=b[sortCol]??null;
+    let va=a[sortCol]!=null?a[sortCol]:null,vb=b[sortCol]!=null?b[sortCol]:null;
     if(va===null&&vb===null)return 0;if(va===null)return 1;if(vb===null)return-1;
     if(typeof va==="string")va=va.toLowerCase();if(typeof vb==="string")vb=vb.toLowerCase();
     return sortDir==="asc"?(va>vb?1:-1):(va<vb?1:-1);
   });
 
   const cols=[["date","Date"],["player","Player"],["desc","Description","no-sort"],["grade","Grade"],["tag","Type"],["cost","Cost"],["salePrice","Sale $"],["pnl","P&L"],["status","Status"],["source","Source"],["mkt","Market","no-sort"]];
-  document.getElementById("tbl-head").innerHTML=`<tr>${cols.map(([c,l,cls])=>`<th class="${cls||""}"${!cls?` onclick="setSort('${c}')"`:""}>${esc(l)}${sortCol===c?(sortDir==="asc"?" ↑":" ↓"):""}</th>`).join("")}</tr>`;
+  document.getElementById("tbl-head").innerHTML="<tr>"+cols.map(([c,l,cls])=>"<th class='"+(cls||"")+"'"+(cls?"":" onclick=\"setSort('"+c+"')\"")+">"+(cls==="no-sort"?l:l+(sortCol===c?(sortDir==="asc"?" ↑":" ↓"):""))+"</th>").join("")+"</tr>";
 
   document.getElementById("tbl-body").innerHTML=data.map(c=>{
     const pnl=c.salePrice!=null?c.salePrice-c.cost:null;
     const tc=TAG_COLORS[c.tag]||"#888";
     const pc=pColor(c.player);
     const isExp=expanded.has(c.id);
-    const descHtml=`<div class="desc-cell"><div class="${isExp?"":"desc-collapsed"}"><div class="desc-main">${esc(c.card)}</div><div class="desc-meta">${esc(c.set)}${c.serial?` &nbsp;·&nbsp; <strong style="color:var(--yellow)">${esc(c.serial)}</strong>`:""}${c.notes?` &nbsp;·&nbsp; <span style="color:var(--purple)">📝 ${esc(c.notes)}</span>`:""}</div></div><button class="expand-btn" onclick="toggleExp(${c.id})">${isExp?"▲ Collapse":"▼ Full details"}</button></div>`;
+
+    const descHtml="<div class='desc-cell'><div class='"+(isExp?"":"desc-collapsed")+"'>"+
+      "<div class='desc-main'>"+esc(c.card)+"</div>"+
+      "<div class='desc-meta'>"+esc(c.set)+(c.serial?" &nbsp;·&nbsp; <strong style='color:var(--yellow)'>"+esc(c.serial)+"</strong>":"")+(c.notes?" &nbsp;·&nbsp; <span style='color:var(--purple)'>📝 "+esc(c.notes)+"</span>":"")+"</div>"+
+      "</div><button class='expand-btn' onclick='toggleExp("+c.id+")'>"+(isExp?"▲ Collapse":"▼ Full details")+"</button></div>";
+
     let mktHtml;
     if(c.market&&!c.market.loading&&!c.market.error){
-      mktHtml=`<div class="mkt-info"><div style="color:var(--cyan)">🇺🇸 ${fmt(c.market.us_low)}–${fmt(c.market.us_high)}</div><div style="color:var(--yellow)">🇨🇳 ${fmt(c.market.china_low)}–${fmt(c.market.china_high)}</div><div style="color:${c.market.trend==="up"?"var(--green)":c.market.trend==="down"?"var(--red)":"var(--text3)"}">${c.market.trend==="up"?"↑ up":c.market.trend==="down"?"↓ down":"→ stable"}</div></div>`;
-    }else if(c.market?.loading){mktHtml=`<span style="color:var(--cyan);font-size:11px">loading…</span>`;}
-    else if(c.market?.error){mktHtml=`<span style="color:var(--red);font-size:11px">error</span>`;}
-    else{mktHtml=`<button class="lookup-btn" onclick="lookupMarket(${c.id})"${!apiKey?" disabled title='Add API key in Market tab'":""}>Lookup</button>`;}
+      const tc2=c.market.trend==="up"?"var(--green)":c.market.trend==="down"?"var(--red)":"var(--text3)";
+      mktHtml="<div class='mkt-info'><div style='color:var(--cyan)'>🇺🇸 "+fmt(c.market.us_low)+"–"+fmt(c.market.us_high)+"</div><div style='color:var(--yellow)'>🇨🇳 "+fmt(c.market.china_low)+"–"+fmt(c.market.china_high)+"</div><div style='color:"+tc2+"'>"+(c.market.trend==="up"?"↑ up":c.market.trend==="down"?"↓ down":"→ stable")+"</div></div>";
+    }else if(c.market&&c.market.loading){mktHtml="<span style='color:var(--cyan);font-size:11px'>loading…</span>";}
+    else if(c.market&&c.market.error){mktHtml="<span style='color:var(--red);font-size:11px'>error</span>";}
+    else{mktHtml="<button class='lookup-btn' onclick='lookupMarket("+c.id+")'"+(!apiKey?" disabled title='Add API key in Market tab'":"")+">Lookup</button>";}
+
     const costHtml=editingCostId===c.id
-      ?`<div class="sale-iw"><input class="sale-inp" id="ci-${c.id}" type="number" step="0.01" value="${c.cost}" onkeydown="if(event.key==='Enter')saveCost(${c.id})"><button class="btn-sm btn-ok" onclick="saveCost(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelCostEdit()">✕</button></div>`
-      :`<span class="sale-cell" onclick="startCostEdit(${c.id})" style="color:var(--pink);font-weight:800">${fmt(c.cost)}</span>`;
+      ?"<div class='sale-iw'><input class='sale-inp' id='ci-"+c.id+"' type='number' step='0.01' value='"+c.cost+"' onkeydown=\"if(event.key==='Enter')saveCost("+c.id+")\"><button class='btn-sm btn-ok' onclick='saveCost("+c.id+")'>✓</button><button class='btn-sm btn-no' onclick='cancelCostEdit()'>✕</button></div>"
+      :"<span class='sale-cell' onclick='startCostEdit("+c.id+")' style='color:var(--pink);font-weight:800'>"+fmt(c.cost)+"</span>";
+
     const saleHtml=editingId===c.id
-      ?`<div class="sale-iw"><input class="sale-inp" id="si-${c.id}" type="number" step="0.01" value="${c.salePrice!=null?c.salePrice:""}" onkeydown="if(event.key==='Enter')saveSale(${c.id})"><button class="btn-sm btn-ok" onclick="saveSale(${c.id})">✓</button><button class="btn-sm btn-no" onclick="cancelEdit()">✕</button></div>`
-      :`<span class="sale-cell" onclick="startEdit(${c.id})" style="color:${c.salePrice!=null?"var(--green)":"var(--text3)"};font-weight:${c.salePrice!=null?700:400}">${c.salePrice!=null?fmt(c.salePrice):"+ add"}</span>`;
-    return`<tr><td style="color:var(--text3);font-size:11px;white-space:nowrap">${c.date.slice(5)}</td><td><div class="player-cell"><div class="p-av" style="background:${pc}22;border-color:${pc};color:${pc}">${initials(c.player)}</div><span class="p-name">${esc(c.player.split(" ").at(-1))}</span></div></td><td>${descHtml}</td><td style="color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap">${esc(c.grade)}</td><td><span class="badge" style="background:${tc}18;color:${tc};border-color:${tc}">${TAG_LABELS[c.tag]||c.tag}</span></td><td>${costHtml}</td><td>${saleHtml}</td><td style="color:${pnlClr(pnl)};font-weight:800;white-space:nowrap">${pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—"}</td><td><span class="status-pill" onclick="toggleStatus(${c.id})" style="background:${c.status==="Sold"?"#e6fff0":"#e8f4ff"};color:${c.status==="Sold"?"var(--green)":"var(--cyan)"};border-color:${c.status==="Sold"?"var(--green)":"var(--cyan)"}">${c.status==="Sold"?"Sold":"Hold"}</span></td><td style="color:var(--text3);font-size:11px;white-space:nowrap">${esc(c.source||"eBay")}</td><td>${mktHtml}</td></tr>`;
+      ?"<div class='sale-iw'><input class='sale-inp' id='si-"+c.id+"' type='number' step='0.01' value='"+(c.salePrice!=null?c.salePrice:"")+"' onkeydown=\"if(event.key==='Enter')saveSale("+c.id+")\"><button class='btn-sm btn-ok' onclick='saveSale("+c.id+")'>✓</button><button class='btn-sm btn-no' onclick='cancelEdit()'>✕</button></div>"
+      :"<span class='sale-cell' onclick='startEdit("+c.id+")' style='color:"+(c.salePrice!=null?"var(--green)":"var(--text3)")+";font-weight:"+(c.salePrice!=null?700:400)+"'>"+(c.salePrice!=null?fmt(c.salePrice):"+ add")+"</span>";
+
+    const statusStyle="background:"+(c.status==="Sold"?"#e6fff0":"#e8f4ff")+";color:"+(c.status==="Sold"?"var(--green)":"var(--cyan)")+";border-color:"+(c.status==="Sold"?"var(--green)":"var(--cyan)");
+
+    return "<tr>"+
+      "<td style='color:var(--text3);font-size:11px;white-space:nowrap'>"+c.date.slice(5)+"</td>"+
+      "<td><div class='player-cell'><div class='p-av' style='background:"+pc+"22;border-color:"+pc+";color:"+pc+"'>"+initials(c.player)+"</div><span class='p-name'>"+esc(c.player.split(" ").at(-1))+"</span></div></td>"+
+      "<td>"+descHtml+"</td>"+
+      "<td style='color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap'>"+esc(c.grade)+"</td>"+
+      "<td><span class='badge' style='background:"+tc+"18;color:"+tc+";border-color:"+tc+"'>"+( TAG_LABELS[c.tag]||c.tag)+"</span></td>"+
+      "<td>"+costHtml+"</td>"+
+      "<td>"+saleHtml+"</td>"+
+      "<td style='color:"+pnlClr(pnl)+";font-weight:800;white-space:nowrap'>"+(pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—")+"</td>"+
+      "<td><span class='status-pill' onclick='toggleStatus("+c.id+")' style='"+statusStyle+"'>"+(c.status==="Sold"?"Sold":"Hold")+"</span></td>"+
+      "<td style='color:var(--text3);font-size:11px;white-space:nowrap'>"+esc(c.source||"eBay")+"</td>"+
+      "<td>"+mktHtml+"</td>"+
+      "</tr>";
   }).join("");
-  if(editingId!=null||editingCostId!=null){requestAnimationFrame(()=>{const el=document.getElementById(`si-${editingId}`)||document.getElementById(`ci-${editingCostId}`);if(el){el.focus();el.select();}});}
+
+  if(editingId!=null||editingCostId!=null){
+    requestAnimationFrame(()=>{
+      const el=document.getElementById("si-"+editingId)||document.getElementById("ci-"+editingCostId);
+      if(el){el.focus();el.select();}
+    });
+  }
 }
 
 function toggleExp(id){expanded.has(id)?expanded.delete(id):expanded.add(id);renderPortfolio();}
@@ -582,22 +680,24 @@ function setSort(col){sortDir=sortCol===col&&sortDir==="asc"?"desc":"asc";sortCo
 function startEdit(id){editingId=id;editingCostId=null;renderPortfolio();}
 function cancelEdit(){editingId=null;renderPortfolio();}
 function saveSale(id){
-  const el=document.getElementById(`si-${id}`);if(!el)return;
+  const el=document.getElementById("si-"+id);if(!el)return;
   const v=parseFloat(el.value);
-  cards=cards.map(c=>c.id===id?{...c,salePrice:isNaN(v)?null:v,status:isNaN(v)?c.status:"Sold"}:c);
+  cards=cards.map(c=>c.id===id?Object.assign({},c,{salePrice:isNaN(v)?null:v,status:isNaN(v)?c.status:"Sold"}):c);
   editingId=null;save();renderPortfolio();
 }
 function startCostEdit(id){editingCostId=id;editingId=null;renderPortfolio();}
 function cancelCostEdit(){editingCostId=null;renderPortfolio();}
 function saveCost(id){
-  const el=document.getElementById(`ci-${id}`);if(!el)return;
+  const el=document.getElementById("ci-"+id);if(!el)return;
   const v=parseFloat(el.value);
-  if(!isNaN(v)&&v>=0)cards=cards.map(c=>c.id===id?{...c,cost:v}:c);
+  if(!isNaN(v)&&v>=0)cards=cards.map(c=>c.id===id?Object.assign({},c,{cost:v}):c);
   editingCostId=null;save();renderPortfolio();
 }
-function toggleStatus(id){cards=cards.map(c=>c.id===id?{...c,status:c.status==="Sold"?"In Collection":"Sold"}:c);save();renderPortfolio();}
+function toggleStatus(id){
+  cards=cards.map(c=>c.id===id?Object.assign({},c,{status:c.status==="Sold"?"In Collection":"Sold"}):c);
+  save();renderPortfolio();
+}
 
-// ── ADD CARD MODAL ───────────────────────────────────
 function openModal(){document.getElementById("modal-overlay").classList.add("open");buildAvatars();setTimeout(()=>document.getElementById("f-player").focus(),100);}
 function closeModal(){document.getElementById("modal-overlay").classList.remove("open");document.getElementById("form-error").style.display="none";}
 function saveCard(){
@@ -613,8 +713,14 @@ function saveCard(){
   let cost=costRaw;
   if(currency==="CAD")cost=+(costRaw*CAD_USD).toFixed(2);
   if(currency==="CNY")cost=+(costRaw*CNY_USD).toFixed(2);
-  const note=document.getElementById("f-notes").value.trim()+(currency!=="USD"?` [orig ${currency} ${costRaw}]`:"");
-  cards=[{id:nextId++,player,date,set,card,serial:document.getElementById("f-serial").value.trim(),grade:document.getElementById("f-grade").value.trim()||"Raw",tag:document.getElementById("f-tag").value,cost,source:document.getElementById("f-source").value.trim()||"eBay",notes:note,salePrice:null,status:"In Collection",market:null},...cards];
+  const note=document.getElementById("f-notes").value.trim()+(currency!=="USD"?" [orig "+currency+" "+costRaw+"]":"");
+  const newCard={id:nextId++,player,date,set,card,
+    serial:document.getElementById("f-serial").value.trim(),
+    grade:document.getElementById("f-grade").value.trim()||"Raw",
+    tag:document.getElementById("f-tag").value,
+    cost,source:document.getElementById("f-source").value.trim()||"eBay",
+    notes:note,salePrice:null,status:"In Collection",market:null};
+  cards=[newCard,...cards];
   save();buildAvatars();closeModal();
   ["f-player","f-set","f-card","f-serial","f-grade","f-cost","f-source","f-notes"].forEach(id=>{document.getElementById(id).value="";});
   document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
@@ -623,23 +729,22 @@ function saveCard(){
   showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
 }
 
-// ── IMPORT CSV ───────────────────────────────────────
 function importCSV(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=e=>{
+  reader.onload=function(e){
     try{
       const lines=e.target.result.replace(/\r/g,"").split("\n").filter(l=>l.trim());
-      const parseRow=line=>{const r=[];let cur="",inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){r.push(cur.trim());cur="";}else cur+=ch;}r.push(cur.trim());return r.map(c=>c.replace(/^"|"$/g,"").trim());};
+      function parseRow(line){const r=[];let cur="",inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;}else if(ch===","&&!inQ){r.push(cur.trim());cur="";}else cur+=ch;}r.push(cur.trim());return r.map(c=>c.replace(/^"|"$/g,"").trim());}
       const hdr=parseRow(lines[0]).map(h=>h.toLowerCase().replace(/[^a-z0-9]/g,""));
-      const idx=k=>hdr.findIndex(h=>h===k);
+      const idx=function(k){return hdr.findIndex(h=>h===k);};
       const iId=idx("id"),iPlayer=idx("player"),iDate=idx("date"),iSet=idx("set"),iCard=idx("card");
       const iSerial=idx("serial"),iGrade=idx("grade"),iType=idx("type"),iCost=idx("costusd");
       const iSale=idx("saleprice"),iStatus=idx("status"),iSource=idx("source"),iNotes=idx("notes");
       let added=0,updated=0;
       for(let i=1;i<lines.length;i++){
         const cols=parseRow(lines[i]);if(cols.length<5)continue;
-        const g=k=>k>=0&&k<cols.length?cols[k]:"";
+        const g=function(k){return k>=0&&k<cols.length?cols[k]:"";};
         const player=g(iPlayer),card=g(iCard);if(!player||!card)continue;
         const id=parseInt(g(iId));
         const cost=parseFloat(g(iCost))||0;
@@ -647,45 +752,75 @@ function importCSV(event){
         const salePrice=isNaN(saleRaw)?null:saleRaw;
         const status=g(iStatus)||"In Collection";
         const existing=!isNaN(id)&&cards.find(c=>c.id===id);
-        if(existing){cards=cards.map(c=>c.id===id?{...c,player,date:g(iDate)||c.date,set:g(iSet)||c.set,card,serial:g(iSerial),grade:g(iGrade)||c.grade,tag:g(iType)||c.tag,cost,salePrice,status,source:g(iSource)||c.source,notes:g(iNotes)||c.notes}:c);updated++;}
-        else{const newId=!isNaN(id)?id:nextId++;if(!isNaN(id)&&id>=nextId)nextId=id+1;cards.push({id:newId,player,date:g(iDate),set:g(iSet),card,serial:g(iSerial),grade:g(iGrade)||"Raw",tag:g(iType)||"rc",cost,salePrice,status,source:g(iSource)||"eBay",notes:g(iNotes)||"",market:null});added++;}
+        if(existing){
+          cards=cards.map(c=>c.id===id?Object.assign({},c,{player,date:g(iDate)||c.date,set:g(iSet)||c.set,card,serial:g(iSerial),grade:g(iGrade)||c.grade,tag:g(iType)||c.tag,cost,salePrice,status,source:g(iSource)||c.source,notes:g(iNotes)||c.notes}):c);updated++;
+        }else{
+          const newId=!isNaN(id)?id:nextId++;
+          if(!isNaN(id)&&id>=nextId)nextId=id+1;
+          cards.push({id:newId,player,date:g(iDate),set:g(iSet),card,serial:g(iSerial),grade:g(iGrade)||"Raw",tag:g(iType)||"rc",cost,salePrice,status,source:g(iSource)||"eBay",notes:g(iNotes)||"",market:null});added++;
+        }
       }
       save();buildAvatars();
-      alert(`CSV imported!\n${added} new card${added!==1?"s":""} added\n${updated} card${updated!==1?"s":""} updated`);
+      alert("CSV imported!\n"+added+" new card"+(added!==1?"s":"")+" added\n"+updated+" card"+(updated!==1?"s":"")+" updated");
       showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
-    }catch(err){alert("CSV import failed. Check file format.\n"+err.message);}
+    }catch(err){alert("CSV import failed.\n"+err.message);}
     event.target.value="";
   };
   reader.readAsText(file,"UTF-8");
 }
 
-// ── MARKET ───────────────────────────────────────────
 function renderMarket(){
   if(apiKey)document.getElementById("key-status").innerHTML='<span style="color:var(--green);font-weight:700">✓ API key saved</span>';
   document.getElementById("api-key-input").value=apiKey;
-  const watch=[{p:"Cooper Flagg",n:"Projected #1 pick — US surging, check China lag"},{p:"Yongxi 'Jacky' Cui",n:"Chinese player — expect 卡淘 premium"},{p:"Yang Hansen",n:"Chinese player — strong domestic demand"},{p:"Anthony Edwards",n:"Top NBA star — popular across both markets"},{p:"LaMelo Ball",n:"Charlotte Hornets — solid Chinese market interest"},{p:"Brandon Miller",n:"Rising Hornet — compare regional gaps"}];
-  document.getElementById("arb-list").innerHTML=watch.map(w=>`<div class="arb-row"><div style="display:flex;align-items:center;gap:10px"><div class="arb-av" style="background:${pColor(w.p)}18;border-color:${pColor(w.p)};color:${pColor(w.p)}">${initials(w.p)}</div><div><div style="font-weight:700;color:var(--text);font-size:13px">${esc(w.p)}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(w.n)}</div></div></div><button class="vc-btn" onclick="viewPlayer('${esc(w.p)}')">View cards →</button></div>`).join("");
+  const watch=[
+    {p:"Cooper Flagg",n:"Projected #1 pick — US surging, check China lag"},
+    {p:"Brandon Miller",n:"粉碎冰/橙碎冰 strong China premium right now 🔥"},
+    {p:"Yongxi 'Jacky' Cui",n:"Chinese player — expect 卡淘 premium"},
+    {p:"Yang Hansen",n:"Chinese player — strong domestic demand"},
+    {p:"Anthony Edwards",n:"Top NBA star — popular across both markets"},
+    {p:"LaMelo Ball",n:"Charlotte Hornets — solid Chinese market interest"},
+  ];
+  document.getElementById("arb-list").innerHTML=watch.map(w=>
+    "<div class='arb-row'><div style='display:flex;align-items:center;gap:10px'>"+
+    "<div class='arb-av' style='background:"+pColor(w.p)+"18;border-color:"+pColor(w.p)+";color:"+pColor(w.p)+"'>"+initials(w.p)+"</div>"+
+    "<div><div style='font-weight:700;color:var(--text);font-size:13px'>"+esc(w.p)+"</div>"+
+    "<div style='font-size:11px;color:var(--text3);margin-top:2px'>"+esc(w.n)+"</div></div></div>"+
+    "<button class='vc-btn' onclick=\"viewPlayer('"+esc(w.p)+"')\">View cards →</button></div>"
+  ).join("");
 }
 function viewPlayer(p){playerFilter=p;showView("portfolio",document.querySelectorAll(".nav-btn")[1]);}
-function saveApiKey(){apiKey=document.getElementById("api-key-input").value.trim();localStorage.setItem("cv_key",apiKey);document.getElementById("key-status").innerHTML=apiKey?'<span style="color:var(--green);font-weight:700">✓ Key saved</span>':'<span style="color:var(--yellow)">No key entered</span>';}
+function saveApiKey(){
+  apiKey=document.getElementById("api-key-input").value.trim();
+  localStorage.setItem("cv_key",apiKey);
+  document.getElementById("key-status").innerHTML=apiKey?'<span style="color:var(--green);font-weight:700">✓ Key saved</span>':'<span style="color:var(--yellow)">No key entered</span>';
+}
 
 async function lookupMarket(id){
   if(!apiKey){alert("Add your Anthropic API key in Market Lookup tab first.");return;}
   const c=cards.find(x=>x.id===id);if(!c)return;
-  cards=cards.map(x=>x.id===id?{...x,market:{loading:true}}:x);renderPortfolio();
+  cards=cards.map(x=>x.id===id?Object.assign({},x,{market:{loading:true}}):x);renderPortfolio();
   try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:`Sports card market analyst. Estimate current market prices:\nPlayer: ${c.player}\nSet: ${c.set}\nCard: ${c.card}\nSerial: ${c.serial||"unnumbered"}\nGrade: ${c.grade}\nPaid: $${c.cost}\nReply ONLY with valid JSON, no markdown:\n{"us_low":number,"us_high":number,"china_low":number,"china_high":number,"trend":"up"|"down"|"stable","note":"one sentence"}`}]})});
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:
+        "Sports card market analyst. Estimate current market prices:\nPlayer: "+c.player+"\nSet: "+c.set+"\nCard: "+c.card+"\nSerial: "+(c.serial||"unnumbered")+"\nGrade: "+c.grade+"\nPaid: $"+c.cost+"\nReply ONLY with valid JSON, no markdown:\n{\"us_low\":number,\"us_high\":number,\"china_low\":number,\"china_high\":number,\"trend\":\"up\"|\"down\"|\"stable\",\"note\":\"one sentence\"}"
+      }]})
+    });
     const d=await res.json();
-    const parsed=JSON.parse((d.content?.[0]?.text||"{}").replace(/```json|```/g,"").trim());
-    cards=cards.map(x=>x.id===id?{...x,market:parsed}:x);
-  }catch(err){cards=cards.map(x=>x.id===id?{...x,market:{error:true}}:x);}
+    const parsed=JSON.parse((d.content&&d.content[0]?d.content[0].text||"{}":"{}").replace(/```json|```/g,"").trim());
+    cards=cards.map(x=>x.id===id?Object.assign({},x,{market:parsed}):x);
+  }catch(err){cards=cards.map(x=>x.id===id?Object.assign({},x,{market:{error:true}}):x);}
   save();renderPortfolio();
 }
 
-// ── EXPORT CSV ───────────────────────────────────────
 function exportCSV(){
   const h=["ID","Player","Date","Set","Card","Serial","Grade","Type","Cost(USD)","Sale Price","P&L","Status","Source","Notes"];
-  const rows=cards.map(c=>{const p=c.salePrice!=null?(c.salePrice-c.cost).toFixed(2):"";const qt=s=>`"${String(s||"").replace(/"/g,'""')}"`;return[c.id,qt(c.player),c.date,qt(c.set),qt(c.card),c.serial||"",c.grade,c.tag,c.cost.toFixed(2),c.salePrice!=null?c.salePrice.toFixed(2):"",p,c.status,c.source||"",qt(c.notes||"")].join(",");});
+  const rows=cards.map(c=>{
+    const p=c.salePrice!=null?(c.salePrice-c.cost).toFixed(2):"";
+    const qt=function(s){return'"'+String(s||"").replace(/"/g,'""')+'"';};
+    return[c.id,qt(c.player),c.date,qt(c.set),qt(c.card),c.serial||"",c.grade,c.tag,c.cost.toFixed(2),c.salePrice!=null?c.salePrice.toFixed(2):"",p,c.status,c.source||"",qt(c.notes||"")].join(",");
+  });
   const a=document.createElement("a");
   a.href="data:text/csv;charset=utf-8,\uFEFF"+encodeURIComponent([h.join(","),...rows].join("\n"));
   a.download="cardvault_"+new Date().toISOString().slice(0,10)+".csv";
