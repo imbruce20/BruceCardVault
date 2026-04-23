@@ -297,21 +297,18 @@ td{padding:8px 10px;vertical-align:top}
 
     <!-- PORTFOLIO -->
     <div id="view-portfolio" class="view">
-      <!-- Status filter -->
       <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
         <span style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap">Show:</span>
         <button id="sf-hold" onclick="setStatusFilter('In Collection')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--cyan);color:#fff;border-color:var(--cyan)">📦 Holdings</button>
         <button id="sf-sold" onclick="setStatusFilter('Sold')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff;color:var(--text3);border-color:var(--border)">✅ Sold</button>
         <button id="sf-all" onclick="setStatusFilter('All')" style="padding:6px 16px;border-radius:20px;border:1.5px solid;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;background:#fff;color:var(--text3);border-color:var(--border)">All</button>
       </div>
-      <!-- Mini summary bar -->
       <div id="portfolio-summary" style="margin-bottom:12px"></div>
-      <!-- Player filters -->
       <div class="filter-row" id="player-filters"></div>
       <div class="table-wrap"><div class="tbl-scroll">
         <table><thead id="tbl-head"></thead><tbody id="tbl-body"></tbody></table>
       </div></div>
-      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Cost or Sale $ to edit &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; Lookup = AI price estimate</div>
+      <div class="hint">Click description to expand &nbsp;·&nbsp; Click Cost or Sale $ to edit &nbsp;·&nbsp; Click Hold/Sold to toggle &nbsp;·&nbsp; ↩ Undo = clear sale &amp; return to holdings &nbsp;·&nbsp; 🗑 = delete card</div>
     </div>
 
     <!-- MARKET -->
@@ -449,7 +446,7 @@ const SEED=[
   {id:32,player:"Damian Lillard",date:"2026-03-09",set:"2023-24 Panini Recon",card:"#143 Holo Blue",serial:"/99",grade:"Raw",cost:4.88,tag:"refractor",source:"eBay",notes:""},
   {id:33,player:"Damian Lillard",date:"2026-03-05",set:"2019-20 Panini Immaculate",card:"Premium Gold Patch Auto",serial:"5/5",grade:"SGC 9.5 / Auto 10",cost:740.50,tag:"rpa",source:"eBay",notes:""},
   {id:34,player:"Damian Lillard",date:"2026-03-05",set:"2018-19 Panini Select",card:"In Flight Signatures On Card",serial:"/35",grade:"PSA 10",cost:347.49,tag:"auto",source:"eBay",notes:""},
-  // Brandon Miller — bilingual standardized
+  // Brandon Miller
   {id:35,player:"Brandon Miller",date:"2026-04-06",set:"2023-24 Panini Contenders Optic",card:"VIPS 红碎冰 Red Cracked Ice #10 RC",serial:"/175",grade:"Raw",cost:22.94,tag:"refractor",source:"eBay",notes:""},
   {id:36,player:"Brandon Miller",date:"2026-04-03",set:"2023-24 Panini Prizm",card:"粉碎冰 Pink Ice #152 RC (4th)",serial:"",grade:"PSA 10",cost:70.07,tag:"refractor",source:"eBay",notes:""},
   {id:37,player:"Brandon Miller",date:"2026-04-03",set:"2023-24 Panini Prizm",card:"橙碎冰 Orange Ice #152 RC (3rd)",serial:"",grade:"PSA 10",cost:72.08,tag:"refractor",source:"eBay",notes:""},
@@ -493,9 +490,16 @@ const SEED=[
   {id:67,player:"Yang Hansen",date:"2026-02-17",set:"2025-26 Topps Midnight",card:"Midnight Sun Signatures RC Auto",serial:"",grade:"Raw",cost:42.70,tag:"auto",source:"eBay",notes:"China market target"},
   // Manu Ginobili
   {id:68,player:"Manu Ginobili",date:"2026-02-04",set:"2025-26 Topps Chrome",card:"Stratospheric Signatures Green Refractor",serial:"/99",grade:"Raw",cost:58.71,tag:"auto",source:"eBay",notes:""},
+  // ── NEW Apr 2026 purchases ──
+  {id:69,player:"Brandon Miller",date:"2026-04-12",set:"2023 Panini Prizm",card:"绿折 Green Prizm #152 RC (3rd)",serial:"",grade:"PSA 10",cost:68.27,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection",market:null},
+  {id:70,player:"Brandon Miller",date:"2026-04-12",set:"2023 Panini Prizm",card:"绿折 Green Prizm #152 RC (4th)",serial:"",grade:"PSA 10",cost:64.32,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection",market:null},
+  {id:71,player:"Brandon Miller",date:"2026-04-12",set:"2023-24 Panini Prizm",card:"红白蓝 Red White & Blue #152 RC (2nd)",serial:"",grade:"PSA 10",cost:69.39,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection",market:null},
+  {id:72,player:"Brandon Miller",date:"2026-04-14",set:"2023 Prizm",card:"红白蓝 Red White Blue #152 RC (3rd)",serial:"",grade:"PSA 10",cost:63.78,tag:"refractor",source:"eBay",notes:"",salePrice:null,status:"In Collection",market:null},
+  {id:73,player:"Yongxi 'Jacky' Cui",date:"2026-04-14",set:"2024-25 Panini Immaculate",card:"Rookie Patch Auto #109",serial:"25/99",grade:"Raw",cost:28.01,tag:"rpa",source:"eBay",notes:"China market target",salePrice:null,status:"In Collection",market:null},
+  {id:74,player:"Donovan Clingan",date:"2026-04-07",set:"2024-25 Panini Immaculate",card:"Premium Patch Auto RC Gold",serial:"/10",grade:"Raw",cost:272.88,tag:"rpa",source:"eBay",notes:"",salePrice:null,status:"In Collection",market:null},
 ];
 
-let cards=[],nextId=69,sortCol="date",sortDir="desc",playerFilter="All",statusFilter="In Collection",editingId=null,editingCostId=null;
+let cards=[],nextId=75,sortCol="date",sortDir="desc",playerFilter="All",statusFilter="In Collection",editingId=null,editingCostId=null;
 const expanded=new Set();
 let apiKey=localStorage.getItem("cv_key")||"";
 
@@ -505,12 +509,24 @@ const initials=n=>n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
 const fmt=n=>n==null?"—":"$"+Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtS=n=>"$"+Math.round(n).toLocaleString("en-US");
 const pnlClr=n=>n==null?"var(--text3)":n>0?"var(--green)":n<0?"var(--red)":"var(--text3)";
-const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
 function save(){try{localStorage.setItem("cv_cards",JSON.stringify(cards));localStorage.setItem("cv_nid",nextId);}catch(e){}}
 function load(){
-  try{const s=localStorage.getItem("cv_cards");if(s){cards=JSON.parse(s);nextId=+(localStorage.getItem("cv_nid")||69);return;}}catch(e){}
-  cards=SEED.map(c=>({salePrice:null,status:"In Collection",market:null,...c}));nextId=69;
+  try{
+    const s=localStorage.getItem("cv_cards");
+    if(s){
+      const parsed=JSON.parse(s);
+      if(Array.isArray(parsed)&&parsed.length>0){
+        cards=parsed;
+        const maxId=cards.reduce((m,c)=>Math.max(m,c.id),0);
+        nextId=Math.max(75,maxId+1);
+        return;
+      }
+    }
+  }catch(e){}
+  cards=SEED.map(c=>({salePrice:null,status:"In Collection",market:null,...c}));
+  nextId=75;
 }
 
 function calcStats(){
@@ -555,8 +571,6 @@ function showView(id,btn){
 
 function renderDashboard(){
   const s=calcStats();
-
-  // Stat cards row
   document.getElementById("stat-grid").innerHTML=[
     {l:"Total Cards",v:s.count,c:"var(--pink)",bt:"var(--pink)"},
     {l:"Total Expense",v:fmtS(s.totalCost),c:"var(--purple)",bt:"var(--purple)"},
@@ -565,7 +579,6 @@ function renderDashboard(){
     {l:"Realized P&L",v:(s.profit>=0?"+":"")+fmtS(s.profit),c:s.profit>=0?"var(--green)":"var(--red)",bt:s.profit>=0?"var(--green)":"var(--red)"},
   ].map(d=>"<div class='stat-card' style='border-top-color:"+d.bt+"'><div class='stat-label'>"+d.l+"</div><div class='stat-val' style='color:"+d.c+"'>"+d.v+"</div></div>").join("");
 
-  // Financial summary bar — split into holding vs sold view
   const roiStr=(s.roi>=0?"+":"")+s.roi.toFixed(1)+"%";
   const profitColor=s.profit>=0?"var(--green)":"var(--red)";
   const profitBg=s.profit>=0?"#f0fff6":"#fff5f5";
@@ -591,7 +604,6 @@ function renderDashboard(){
       "<div class='fin-sub'>ROI on sold: <strong style='color:"+profitColor+"'>"+roiStr+"</strong></div>"+
     "</div>";
 
-  // Player bars — show IN COLLECTION cost basis, with total cost as lighter track
   const allPlayers=getPlayers();
   const bp=allPlayers.map(p=>{
     const all=cards.filter(c=>c.player===p);
@@ -614,7 +626,6 @@ function renderDashboard(){
     "</div>"
   ).join("");
 
-  // Top holdings
   document.getElementById("top-holdings").innerHTML=cards.filter(c=>c.status==="In Collection").sort((a,b)=>b.cost-a.cost).slice(0,8).map(c=>
     "<div class='hold-row'>"+
     "<div><div style='font-size:12px;font-weight:700;color:var(--text)'>"+esc(c.player)+"</div>"+
@@ -625,17 +636,15 @@ function renderDashboard(){
     "</div></div>"
   ).join("");
 
-  // Tag breakdown
   document.getElementById("tag-breakdown").innerHTML=Object.entries(TAG_COLORS).map(([tag,col])=>{
     const n=cards.filter(c=>c.tag===tag).length;
-    return n?"<div class='tag-chip' style='background:"+col+"18;border-color:"+col+"'><div class='tag-count' style='color:"+col+"'>"+n+"</div><div class='tag-lbl' style='color:"+col+"'>"+tag+"</div></div>":"";
+    return n?"<div class='tag-chip' style='background:"+col+"18;color:"+col+";border-color:"+col+"'><div class='tag-count' style='color:"+col+"'>"+n+"</div><div class='tag-lbl' style='color:"+col+"'>"+tag+"</div></div>":"";
   }).join("");
 }
 
 function setStatusFilter(v){
   statusFilter=v;
-  playerFilter="All"; // reset player filter on status change
-  // update button styles
+  playerFilter="All";
   const styles={
     "In Collection":{bg:"var(--cyan)",fg:"#fff",bc:"var(--cyan)"},
     "Sold":{bg:"var(--green)",fg:"#fff",bc:"var(--green)"},
@@ -652,11 +661,8 @@ function setStatusFilter(v){
 
 function renderPortfolio(){
   const search=document.getElementById("search-input").value.toLowerCase();
-
-  // base filtered by status
   const statusFiltered=statusFilter==="All"?cards:cards.filter(c=>c.status===statusFilter);
 
-  // mini summary bar
   const summaryEl=document.getElementById("portfolio-summary");
   if(summaryEl){
     if(statusFilter==="In Collection"){
@@ -672,12 +678,12 @@ function renderPortfolio(){
       const cost=statusFiltered.reduce((s,c)=>s+c.cost,0);
       const profit=revenue-cost;
       const roi=cost>0?((profit/cost)*100).toFixed(1):0;
-      const pColor=profit>=0?"var(--green)":"var(--red)";
+      const pColor2=profit>=0?"var(--green)":"var(--red)";
       summaryEl.innerHTML="<div style='background:#e6fff0;border:1.5px solid var(--green);border-radius:10px;padding:10px 16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap'>"+
         "<span style='font-size:13px;font-weight:700;color:var(--green)'>✅ "+statusFiltered.length+" cards sold</span>"+
         "<span style='font-size:13px;font-weight:700;color:var(--green)'>💰 Revenue: "+fmtS(revenue)+"</span>"+
-        "<span style='font-size:13px;font-weight:700;color:"+pColor+"'>P&L: "+(profit>=0?"+":"")+fmtS(profit)+"</span>"+
-        "<span style='font-size:12px;color:var(--text3)'>ROI: <strong style='color:"+pColor+"'>"+(profit>=0?"+":"")+roi+"%</strong></span>"+
+        "<span style='font-size:13px;font-weight:700;color:"+pColor2+"'>P&L: "+(profit>=0?"+":"")+fmtS(profit)+"</span>"+
+        "<span style='font-size:12px;color:var(--text3)'>ROI: <strong style='color:"+pColor2+"'>"+(profit>=0?"+":"")+roi+"%</strong></span>"+
         "</div>";
     }else{
       summaryEl.innerHTML="<div style='background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;display:flex;gap:24px;align-items:center;flex-wrap:wrap'>"+
@@ -687,26 +693,37 @@ function renderPortfolio(){
     }
   }
 
-  // player filters — scoped to status filter
   const playersInView=[...new Set(statusFiltered.map(c=>c.player))];
-  document.getElementById("player-filters").innerHTML=[{l:"All ("+statusFiltered.length+")",v:"All",c:null},...playersInView.map(p=>({l:p+" ("+statusFiltered.filter(c=>c.player===p).length+")",v:p,c:pColor(p)}))].map(f=>{
+  const filterData=[{l:"All ("+statusFiltered.length+")",v:"All",c:null},...playersInView.map(p=>({l:p+" ("+statusFiltered.filter(c=>c.player===p).length+")",v:p,c:pColor(p)}))];
+  document.getElementById("player-filters").innerHTML=filterData.map((f,i)=>{
     const a=playerFilter===f.v;
-    return "<button class='f-btn' style='background:"+(a?(f.c||"var(--pink)"):"#fff")+";color:"+(a?"#fff":(f.c||"var(--text3)"))+";border-color:"+(a?(f.c||"var(--pink)"):"var(--border)")+"' onclick=\"setFilter('"+esc(f.v)+"')\">"+esc(f.l)+"</button>";
+    return "<button class='f-btn' data-fi='"+i+"' style='background:"+(a?(f.c||"var(--pink)"):"#fff")+";color:"+(a?"#fff":(f.c||"var(--text3)"))+";border-color:"+(a?(f.c||"var(--pink)"):"var(--border)")+"'>"+esc(f.l)+"</button>";
   }).join("");
+  window._filterData=filterData;
+  document.getElementById("player-filters").onclick=function(e){
+    const btn=e.target.closest("button[data-fi]");
+    if(!btn)return;
+    setFilter(window._filterData[+btn.dataset.fi].v);
+  };
 
-  // final filtered data
+  const getVal=(c,col)=>{
+    if(col==="pnl")return c.salePrice!=null?c.salePrice-c.cost:null;
+    const v=c[col];
+    return(v!==null&&v!==undefined&&v!=="")? v:null;
+  };
   let data=statusFiltered.filter(c=>{
     if(playerFilter!=="All"&&c.player!==playerFilter)return false;
     if(search&&![c.player,c.card,c.set,c.grade,c.notes||"",c.source||""].join(" ").toLowerCase().includes(search))return false;
     return true;
   }).sort((a,b)=>{
-    let va=a[sortCol]!=null?a[sortCol]:null,vb=b[sortCol]!=null?b[sortCol]:null;
+    let va=getVal(a,sortCol),vb=getVal(b,sortCol);
     if(va===null&&vb===null)return 0;if(va===null)return 1;if(vb===null)return-1;
     if(typeof va==="string")va=va.toLowerCase();if(typeof vb==="string")vb=vb.toLowerCase();
+    if(va===vb)return b.id-a.id;
     return sortDir==="asc"?(va>vb?1:-1):(va<vb?1:-1);
   });
 
-  const cols=[["date","Date"],["player","Player"],["desc","Description","no-sort"],["grade","Grade"],["tag","Type"],["cost","Cost"],["salePrice","Sale $"],["pnl","P&L"],["status","Status"],["source","Source"],["mkt","Market","no-sort"]];
+  const cols=[["date","Date"],["player","Player"],["desc","Description","no-sort"],["grade","Grade"],["tag","Type"],["cost","Cost"],["salePrice","Sale $"],["pnl","P&L"],["status","Status"],["source","Source"],["mkt","Market","no-sort"],["actions","","no-sort"]];
   document.getElementById("tbl-head").innerHTML="<tr>"+cols.map(([c,l,cls])=>"<th class='"+(cls||"")+"'"+(cls?"":" onclick=\"setSort('"+c+"')\"")+">"+(cls==="no-sort"?l:l+(sortCol===c?(sortDir==="asc"?" ↑":" ↓"):""))+"</th>").join("")+"</tr>";
 
   document.getElementById("tbl-body").innerHTML=data.map(c=>{
@@ -743,13 +760,17 @@ function renderPortfolio(){
       "<td><div class='player-cell'><div class='p-av' style='background:"+pc+"22;border-color:"+pc+";color:"+pc+"'>"+initials(c.player)+"</div><span class='p-name'>"+esc(c.player.split(" ").at(-1))+"</span></div></td>"+
       "<td>"+descHtml+"</td>"+
       "<td style='color:var(--cyan);font-size:11px;font-weight:600;white-space:nowrap'>"+esc(c.grade)+"</td>"+
-      "<td><span class='badge' style='background:"+tc+"18;color:"+tc+";border-color:"+tc+"'>"+( TAG_LABELS[c.tag]||c.tag)+"</span></td>"+
+      "<td><span class='badge' style='background:"+tc+"18;color:"+tc+";border-color:"+tc+"'>"+(TAG_LABELS[c.tag]||c.tag)+"</span></td>"+
       "<td>"+costHtml+"</td>"+
       "<td>"+saleHtml+"</td>"+
       "<td style='color:"+pnlClr(pnl)+";font-weight:800;white-space:nowrap'>"+(pnl!=null?(pnl>=0?"+":"")+fmt(pnl):"—")+"</td>"+
       "<td><span class='status-pill' onclick='toggleStatus("+c.id+")' style='"+statusStyle+"'>"+(c.status==="Sold"?"Sold":"Hold")+"</span></td>"+
       "<td style='color:var(--text3);font-size:11px;white-space:nowrap'>"+esc(c.source||"eBay")+"</td>"+
       "<td>"+mktHtml+"</td>"+
+      "<td style='white-space:nowrap'>"+
+        (c.status==="Sold"?"<button class='btn-sm' onclick='clearSale("+c.id+")' style='background:#fff0f5;border:1.5px solid var(--pink);color:var(--pink);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;margin-right:4px' title='Clear sale & return to holdings'>↩ Undo</button>":"")+
+        "<button class='btn-sm' onclick='deleteCard("+c.id+")' style='background:#fff5f5;border:1.5px solid var(--red);color:var(--red);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700' title='Delete card'>🗑</button>"+
+      "</td>"+
       "</tr>";
   }).join("");
 
@@ -784,6 +805,18 @@ function toggleStatus(id){
   cards=cards.map(c=>c.id===id?Object.assign({},c,{status:c.status==="Sold"?"In Collection":"Sold"}):c);
   save();renderPortfolio();
 }
+function clearSale(id){
+  cards=cards.map(c=>c.id===id?Object.assign({},c,{salePrice:null,status:"In Collection"}):c);
+  save();renderPortfolio();
+}
+function deleteCard(id){
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  if(!confirm("Delete this card?\n\n"+c.player+" — "+c.card+"\n\nThis cannot be undone."))return;
+  cards=cards.filter(x=>x.id!==id);
+  if(editingId===id)editingId=null;
+  if(editingCostId===id)editingCostId=null;
+  save();buildAvatars();renderPortfolio();
+}
 
 function openModal(){document.getElementById("modal-overlay").classList.add("open");buildAvatars();setTimeout(()=>document.getElementById("f-player").focus(),100);}
 function closeModal(){document.getElementById("modal-overlay").classList.remove("open");document.getElementById("form-error").style.display="none";}
@@ -808,6 +841,7 @@ function saveCard(){
     cost,source:document.getElementById("f-source").value.trim()||"eBay",
     notes:note,salePrice:null,status:"In Collection",market:null};
   cards=[newCard,...cards];
+  editingId=null;editingCostId=null;
   save();buildAvatars();closeModal();
   ["f-player","f-set","f-card","f-serial","f-grade","f-cost","f-source","f-notes"].forEach(id=>{document.getElementById(id).value="";});
   document.getElementById("f-date").value=new Date().toISOString().slice(0,10);
@@ -847,10 +881,12 @@ function importCSV(event){
           cards.push({id:newId,player,date:g(iDate),set:g(iSet),card,serial:g(iSerial),grade:g(iGrade)||"Raw",tag:g(iType)||"rc",cost,salePrice,status,source:g(iSource)||"eBay",notes:g(iNotes)||"",market:null});added++;
         }
       }
+      editingId=null;editingCostId=null;
       save();buildAvatars();
       alert("CSV imported!\n"+added+" new card"+(added!==1?"s":"")+" added\n"+updated+" card"+(updated!==1?"s":"")+" updated");
       showView("portfolio",document.querySelectorAll(".nav-btn")[1]);
     }catch(err){alert("CSV import failed.\n"+err.message);}
+    
     event.target.value="";
   };
   reader.readAsText(file,"UTF-8");
@@ -866,16 +902,19 @@ function renderMarket(){
     {p:"Yang Hansen",n:"Chinese player — strong domestic demand"},
     {p:"Anthony Edwards",n:"Top NBA star — popular across both markets"},
     {p:"LaMelo Ball",n:"Charlotte Hornets — solid Chinese market interest"},
+    {p:"Donovan Clingan",n:"Centers market heating up — monitor closely"},
   ];
-  document.getElementById("arb-list").innerHTML=watch.map(w=>
+  document.getElementById("arb-list").innerHTML=watch.map((w,i)=>
     "<div class='arb-row'><div style='display:flex;align-items:center;gap:10px'>"+
     "<div class='arb-av' style='background:"+pColor(w.p)+"18;border-color:"+pColor(w.p)+";color:"+pColor(w.p)+"'>"+initials(w.p)+"</div>"+
     "<div><div style='font-weight:700;color:var(--text);font-size:13px'>"+esc(w.p)+"</div>"+
     "<div style='font-size:11px;color:var(--text3);margin-top:2px'>"+esc(w.n)+"</div></div></div>"+
-    "<button class='vc-btn' onclick=\"viewPlayer('"+esc(w.p)+"')\">View cards →</button></div>"
+    "<button class='vc-btn' data-pi='"+i+"' onclick='arbView(this)'>View cards →</button></div>"
   ).join("");
+  window._arbWatch=watch;
 }
 function viewPlayer(p){playerFilter=p;showView("portfolio",document.querySelectorAll(".nav-btn")[1]);}
+function arbView(btn){const w=window._arbWatch[+btn.dataset.pi];if(w)viewPlayer(w.p);}
 function saveApiKey(){
   apiKey=document.getElementById("api-key-input").value.trim();
   localStorage.setItem("cv_key",apiKey);
